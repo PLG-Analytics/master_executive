@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script type="module">
+      import { auth } from "https://cdn.jsdelivr.net/npm/@qlik/api@2/index.min.js";
+
+      // Let Qlik finish storing the token before redirecting
+      await auth.handleRedirectCallback();
+
+      // Then go back to your app
+      window.location.replace("/index.html");
+    </script>
+  </head>
+  <body>
+    Completing login...
+  </body>
+</html>
