@@ -1,6 +1,9 @@
-<!DOCTYPE html><!DOCTYPE html<head>
-
-  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script> <!-- Qlik Web Components library -->
 
   <style>
     .viz-container {
@@ -13,10 +16,11 @@
       height: 100%;
       display: block;
     }
+
   </style>
 
 </head>
-
+    
 <body>
 
 <h2>Master Executive Report</h2>
@@ -29,19 +33,11 @@
     host="pondlehocky.us.qlikcloud.com"
     redirect-uri="http://127.0.0.1:5500/oauth-callback.html"
     client-id="019ed7386b4d654809b0cc31effbd1d7"
-    web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5">
+    web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5"
+    identity = 'embed-session-1' >     <!-- allows us to render the chart without any filters that may be applied on the app -->
   </qlik-embed>
 </div>
 
-
-<script>
-  // ✅ Only keep resize fix
-  window.addEventListener("load", () => {
-    setTimeout(() => window.dispatchEvent(new Event("resize")), 300);
-    setTimeout(() => window.dispatchEvent(new Event("resize")), 800);
-    setTimeout(() => window.dispatchEvent(new Event("resize")), 1500);
-  });
-</script>
 
 </body>
 </html>
