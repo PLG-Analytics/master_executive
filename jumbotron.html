@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Qlik Web Components library -->
+  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+
+    .viz-container {
+      width: 100%;
+      height: 900px;
+      position: relative;
+    }
+
+    qlik-embed {
+      width: 100%;
+      height: 100%;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+
+    .toolbar {
+      margin-bottom: 10px;
+    }
+
+    .hidden {
+      display: none;
+    }
+    
+    #btnClear {
+      background-color: #12284c;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-bottom: 5px;
+      }
+
+    /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
+    .kpi-row {
+      display: flex;
+      gap: 15px;
+    }
+    
+    /* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
+    .kpi-wrapper {
+      flex: 1 1 0;
+      min-width: 0;       
+      height: 125px;
+    }
+
+    /* Ensuring that the Qlik embed component within the KPI wrapper takes up the full space of its parent */
+    .kpi-wrapper qlik-embed {
+      width: 100%;
+      height: 100%;
+    }
+
+  </style>
+
+  
+  <script
+    data-host="https://pondlehocky.us.qlikcloud.com"
+    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+    data-redirect-uri="http://127.0.0.1:5500/oauth-callback.html"
+    data-auth-type="Oauth2"
+    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
+  </script>
+
+</head>
+
+<body>
+    <!-- Waffle button -->
+  <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+
+  <!-- Waffle menu container -->
+  <div id="waffle-container" class="hidden"></div>
+
+ 
+  <div id="divLogo"><img src="Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
+  <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
+  <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
+
+  <h2> Jumbotron Report</h2>
+
+  <div class="toolbar">
+    <button id="btnClear" class="hidden" onclick="clearFilters()">
+      Clear All Filters
+    </button>
+  </div>
+
+  <!-- will serve as the container for the Qlik charts -->
+  <div class="viz-container" id="container"></div>
+
+  <script> 
+    // Toggle the visibility of the waffle navigation menu   
+    function toggleWaffle() {
+      const menu = document.getElementById("waffleMenu");
+      if (menu) {
+        menu.classList.toggle("hidden");
+      }
+    }
+
+    // Functionality to highlight the current page in the waffle navigation menu
+    function highlightCurrentPage() {
+      let current = window.location.pathname.split("/").pop();
+      if (current === "") current = "index.html";
+
+      document.querySelectorAll(".waffle-grid a").forEach(link => {
+        if (link.getAttribute("href") === current) {
+          link.classList.add("active");
+        }
+      });
+
+      
+    }
+
+    // Load nav.html
+    fetch("nav.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("waffle-container").innerHTML = html;
+
+        // highlight AFTER load
+        highlightCurrentPage();
+      });
+
+    // Close waffle menuwhen clicking outside
+    document.addEventListener("click", (e) => {
+      const menu = document.getElementById("waffleMenu");
+      const button = document.querySelector(".waffle-button");
+
+      if (menu && !menu.contains(e.target) && !button.contains(e.target)) {
+        menu.classList.add("hidden");
+      }
+    });
+
+    // Get references to the container, clear button, and navigation arrows
+    const container = document.getElementById("container");
+    const btnClear = document.getElementById("btnClear");
+    const nextArrow = document.getElementById("nextArrow");
+    const backArrow = document.getElementById("backArrow");
+    
+    // generate Jumbotron + KPIs  with a unique identity for each session
+    function createChart(identity, objectId) {
+      const embed = document.createElement("qlik-embed");
+
+      embed.setAttribute("ui", "analytics/chart");
+      embed.setAttribute("app-id", "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f");
+      embed.setAttribute("object-id", objectId);
+      embed.setAttribute("identity", identity); // unique identity required for each session to avoid carrying over filters
+
+    return embed;
+    }
+
+    // Wait for Qlik to finish authorizing the user before showing relevant UI elements
+    async function waitForQlikAuth() {
+      const actionBtn = document.getElementById("btnClear");
+
+      // Wait until the component is defined
+      await customElements.whenDefined("qlik-embed");
+
+      const tryBind = async () => {
+        const embed = document.querySelector("qlik-embed");
+        if (!embed) return;
+
+        try {
+          const refApi = await embed.getRefApi();
+          const doc = await refApi.getDoc();
+
+          if (doc) {
+            console.log("Qlik authorized");
+
+            btnClear.classList.remove("hidden");  
+            backArrow.classList.add("ready");
+
+            backArrow.onclick = () => { window.location.href = "index.html"; };
+
+            nextArrow.classList.add("ready");
+
+            nextArrow.onclick = () => { window.location.href = "template.html";  };
+
+            
+            document.querySelector(".waffle-button").classList.remove("hidden");
+            document.getElementById("waffle-container").classList.remove("hidden");
+
+            return true;
+          }
+          } catch (err) {
+              console.log("Error:", err);
+          }
+
+          return false;
+        };
+
+        // Keep trying until auth is complete
+        const interval = setInterval(async () => {
+        const success = await tryBind();
+        if (success) clearInterval(interval);
+          }, 500);
+  }
+
+    // Wrap the KPI chart in a div to control its size and layout
+    function wrapKPI(chart) {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("kpi-wrapper");
+      wrapper.appendChild(chart);
+      return wrapper;
+    }
+
+    //  Initial render of the KPIs and Jumbotron chart
+    let kpiActiveInv = createChart("session-" + Date.now(), "dd90cd46-c322-4d26-8445-4306b30743ae");
+    let kpiCurrValuation = createChart("session-" + Date.now(), "d5f88f3f-f639-4830-b83b-9c7be2f42084");
+    let kpiMoMInv = createChart("session-" + Date.now(), "42a7f545-20f9-4777-ac2d-98aa64afb82d");
+    let kpiMoMValuation = createChart("session-" + Date.now(), "9a5aed9f-7b4d-465a-a601-7a777c55148c");
+    let chrtJumbotron = createChart("session-" + Date.now(), "1c7b6c1d-d436-44e3-84b5-c3850e7ff2f7");
+
+    // Create a row for the KPIs and append them to the container so that they have a similar layout to QLIK
+    const kpiRow = document.createElement("div");
+    kpiRow.classList.add("kpi-row");
+
+    kpiRow.appendChild(wrapKPI(kpiActiveInv));
+    kpiRow.appendChild(wrapKPI(kpiCurrValuation));
+    kpiRow.appendChild(wrapKPI(kpiMoMInv));
+    kpiRow.appendChild(wrapKPI(kpiMoMValuation));
+
+    // Append the KPI row and Jumbotron chart to the container
+    container.appendChild(kpiRow);
+    container.appendChild(chrtJumbotron);
+
+    waitForQlikAuth(); // show the button only when the auth is complete
+
+    // Clear filters and re-render the chart with a new identity
+    function clearFilters() {
+      btnClear.classList.add("hidden"); // hide the button while we reset the chart
+
+      const newJumbotron = createChart("session-" + Date.now(), "1c7b6c1d-d436-44e3-84b5-c3850e7ff2f7");
+
+      setTimeout(() => {
+        container.replaceChild(newJumbotron, chrtJumbotron);
+        chrtJumbotron = newJumbotron;
+        waitForQlikAuth(); // show the button only when the auth is complete
+      }, 150);
+    }
+
+  </script>
+
+</body>
+</html>

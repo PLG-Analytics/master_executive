@@ -1,88 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Qlik Web Components library -->
+    <!-- Qlik Web Components library -->
   <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+  <link rel="stylesheet" href="styles.css">
 
-  <style>
-    .viz-container {
-      width: 100%;
-      height: 900px;
-      position: relative;
-    }
-
-    qlik-embed {
-      width: 100%;
-      height: 100%;
-      display: block;
-      transition: opacity 0.2s ease;
-    }
-
-    .toolbar {
-      margin-bottom: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-  </style>
+  <!-- Qlik embed (handles OAuth) -->
+  <script
+    data-host="https://pondlehocky.us.qlikcloud.com"
+    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+    data-redirect-uri="http://127.0.0.1:5500/oauth-callback.html"
+    data-auth-type="Oauth2"
+    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
+  </script>
 </head>
 
 <body>
 
-<h2> Jumbotron Report</h2>
 
-<div class="toolbar">
-  <button id="clearBtn" class="hidden" onclick="clearFilters()">
-    Clear All Filters
-  </button>
+<div id="hiddenContent" class="hidden">
+    <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div> 
+    <div id="divLogo"><img src="Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>
+    <h1>Master Executive Report</h1>
+    <h2>Table of Contents</h2>
+    <ul>
+        <li><a href="/jumbotron.html">Jumbotron</a></li>
+        <li>TEST Section 2</li>
+        <li>TEST Section 3</li>
+    </ul>
+
+    <h2>Assumptions</h2>
+    <ul>
+        <li>Data refreshed daily</li>
+        <li>Stage Assumptions</li>
+    </ul>
 </div>
 
-<div class="viz-container" id="container"></div>
+<qlik-embed
+  id="authEmbed"
+  ui="analytics/chart"
+  app-id="f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f"
+  object-id="2c6dff8c-d1c0-4add-b001-07ab374ad255" >
+</qlik-embed>
+
 
 <script>
-  const container = document.getElementById("container");
-  const clearBtn = document.getElementById("clearBtn");
 
-  function createChart(identity) {
-    const embed = document.createElement("qlik-embed");
+// once authentication is complete, show the hidden content and enable navigation to the next page
+async function initAuth() {
+  const embed = document.getElementById("authEmbed"); 
+  const arrow = document.getElementById("nextArrow");
 
-    embed.setAttribute("ui", "analytics/chart");
-    embed.setAttribute("app-id", "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f");
-    embed.setAttribute("object-id", "1c7b6c1d-d436-44e3-84b5-c3850e7ff2f7");
-    embed.setAttribute("host", "pondlehocky.us.qlikcloud.com");
-    embed.setAttribute("redirect-uri", "http://127.0.0.1:5500/oauth-callback.html");
-    embed.setAttribute("client-id", "019ed7386b4d654809b0cc31effbd1d7");
-    embed.setAttribute("web-integration-id", "uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5");
-    embed.setAttribute("identity", identity); // reset identity to force a new session so that filters are cleared
+  await customElements.whenDefined("qlik-embed");
 
-    // hide 'Clear All Filters' button until authorization is complete 
-    setTimeout(() => {
-      clearBtn.classList.remove("hidden"); }, 1500); 
+  const checkAuth = async () => {
+    try {
+      const refApi = await embed.getRefApi();
+      const doc = await refApi.getDoc();
 
-    return embed;
-  }
+      if (doc) {
+        console.log("Auth complete");
 
-  // ✅ Initial render
-  let currentEmbed = createChart("session-" + Date.now());
-  container.appendChild(currentEmbed);
+        // show hidden content AFTER auth
+        document.getElementById("hiddenContent").classList.remove("hidden");
+        document.getElementById("authEmbed").classList.add("hidden");
 
-  // ✅ Clear (reset chart)
-  function clearFilters() {
-    clearBtn.classList.add("hidden");
+        arrow.classList.add("ready");
 
-    const newEmbed = createChart("session-" + Date.now());
+        arrow.onclick = () => {
+          window.location.href = "jumbotron.html";
+        };
 
-    currentEmbed.style.opacity = "0.2";
+        return true;
+      }
+    } catch {}
 
-    setTimeout(() => {
-      container.replaceChild(newEmbed, currentEmbed);
-      currentEmbed = newEmbed;
-    }, 150);
-  }
+    return false;
+  };
+
+  const interval = setInterval(async () => {
+    if (await checkAuth()) clearInterval(interval);
+  }, 500);
+}
+
+initAuth();
 </script>
 
 </body>

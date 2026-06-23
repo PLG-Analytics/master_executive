@@ -1,0 +1,114 @@
+body {
+        font-family: Arial;
+        padding: 30px;
+    }
+    
+#divLogo {
+    display: flex;
+    margin-bottom: 25px;   
+    margin-top: -25px;
+    justify-content: center;
+    align-items: center;
+}
+
+#imgLogo {       
+    width: 35%; 
+    height: auto;
+}
+
+.hidden {
+    display: none;
+}
+
+.nav-arrow {
+    position: fixed;
+    bottom: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: #2d6fb7;
+    opacity: 0; 
+    transition: opacity 0.3s;
+    z-index: 9999; 
+}
+
+.nav-arrow.ready {
+    opacity: 1;
+}
+
+.nav-arrow-back {
+    left: 20px;
+}
+
+.nav-arrow-next {
+    right: 20px;
+}
+
+
+/* Hidden state */
+.hidden {
+    display: none;
+}
+
+/* Hide menu initially */
+.hidden {
+    display: none;
+}
+
+/* Styling the waffle button-like image */
+.waffle-button {
+    font-size: 24px;
+    cursor: pointer;
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 1000;
+}
+
+/* Styling the expanded options within the waffle nav */
+.waffle-menu {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+
+    background: white;
+    border-radius: 12px;
+    padding: 15px;
+
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    z-index: 999;
+}
+
+/* Styling the overall layout of the waffle nav  */
+.waffle-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Styling the individual options within the waffle nav */
+.waffle-grid a { 
+    display: block;
+
+    padding: 10px 16px;
+
+    text-decoration: none;
+    color: #12284c;
+    font-size: 14px;
+
+    background: none;
+    border-radius: 0;
+    height: auto;
+    transition: background 0.2s ease;
+
+}
+
+/* Styling the hover within the waffle nav */
+.waffle-grid a:hover {
+    background: #f4f6f9;
+}
+
+/* Styling the active/current page within the waffle nav */
+.waffle-grid a.active { 
+    background: #e8edf5;
+    font-weight: 600;
+}
