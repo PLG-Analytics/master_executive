@@ -6,13 +6,14 @@
 
     <!-- Qlik Web Components library -->
   <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
-  <link rel="stylesheet" href="styles.css">
-
+   <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/utils.js"></script>
+  
   <!-- Qlik embed (handles OAuth) -->
   <script
     data-host="https://pondlehocky.us.qlikcloud.com"
     data-client-id="019ed7386b4d654809b0cc31effbd1d7"
-    data-redirect-uri="http://127.0.0.1:5500/oauth-callback.html"
+    data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
     data-auth-type="Oauth2"
     data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
   </script>
@@ -23,11 +24,11 @@
 
 <div id="hiddenContent" class="hidden">
     <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div> 
-    <div id="divLogo"><img src="Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>
+    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>
     <h1>Master Executive Report</h1>
     <h2>Table of Contents</h2>
     <ul>
-        <li><a href="/jumbotron.html">Jumbotron</a></li>
+        <li><a href="jumbotron.html">Jumbotron</a></li>
         <li>TEST Section 2</li>
         <li>TEST Section 3</li>
     </ul>
