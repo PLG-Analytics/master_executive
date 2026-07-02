@@ -4,90 +4,185 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <!-- Qlik Web Components library -->
-  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
-   <link rel="stylesheet" href="/css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
   <script src="/js/utils.js"></script>
-  
-  <!-- Qlik embed (handles OAuth) -->
-  <script
-    data-host="https://pondlehocky.us.qlikcloud.com"
-    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
-    data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
-    data-auth-type="Oauth2"
-    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
-  </script>
 </head>
 
+
+<style>
+  .index-nav-container {
+    width: 100%;
+    margin-top: 40px;
+  }
+
+  .index-nav-arrow {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+
+      font-size: 28px;
+      color: #2d6fb7;
+      cursor: pointer;
+      user-select: none;
+      z-index: 1000;
+  }
+
+  .index-nav-arrow:hover {
+      color: #1f4f82;
+  }
+
+  .report-contents {
+      width: 100%;
+      max-width: 1400px;
+      border-collapse: collapse;
+      margin-top: 20px;
+      border: 2px solid #12284c;   /* outer border */
+  }
+
+  .report-contents th {
+      background-color: #12284c;
+      color: white;
+      text-align: left;
+      padding: 12px;
+      border: 1px solid #12284c;
+  }
+
+  .report-contents td {
+      padding: 12px;
+      border: 1px solid #12284c;
+      vertical-align: top;
+      line-height: 1.6;
+  }
+
+  .report-contents tr:nth-child(even) {
+      background-color: #f8f9fb;
+  }
+
+  .report-contents tbody tr {
+      transition: background-color 0.2s ease;
+  }
+
+  .report-contents tbody tr:hover {
+      background-color: #eef4fb;
+  }
+
+  .report-contents tbody tr:hover td:first-child {
+      border-left: 4px solid #2d6fb7;
+  }
+
+  .report-link {
+      color: #2d6fb7;
+      text-decoration: none;
+      font-weight: 600;
+  }
+
+  .report-link:hover {
+      color: #1f4f82;
+      text-decoration: underline;
+  }
+
+
+</style>
 <body>
+  <div class="page-content">
+    <!-- Waffle button -->
+    <div class="waffle-button" onclick="toggleWaffle()">☰</div>
 
+    <!-- Waffle menu container -->
+    <div id="waffle-container"></div>
 
-<div id="hiddenContent" class="hidden">
-    <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div> 
-    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>
+  
+    <div id="divLogo">
+        <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">
+    </div>
+
     <h1>Master Executive Report</h1>
-    <h2>Table of Contents</h2>
-    <ul>
-        <li><a href="jumbotron.html">Jumbotron</a></li>
-        <li>TEST Section 2</li>
-        <li>TEST Section 3</li>
-    </ul>
 
-    <h2>Assumptions</h2>
-    <ul>
-        <li>Data refreshed daily</li>
-        <li>Stage Assumptions</li>
-    </ul>
-</div>
+    <br>
+    
+    <h2>Report Information</h2>
 
-<qlik-embed
-  id="authEmbed"
-  ui="analytics/chart"
-  app-id="f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f"
-  object-id="2c6dff8c-d1c0-4add-b001-07ab374ad255" >
-</qlik-embed>
+    <p><strong>Refresh Schedule:</strong> Daily at approximately 1:00 AM EST</p>
 
+    <p><strong>Data Sources:</strong> PLG operational systems and reporting platforms</p>
+
+    <p><strong>Reporting Methodology:</strong> Inventory and performance metrics are based on the firm's stage-based reporting framework implemented in June 2026.</p>
+
+    <p><strong>Support Contacts:</strong> Megha Patel (mpatel@pondlehocky.com) and Kevin Doyle (kdoyle@pondlehocky.com)</p>
+
+    <br>
+
+    <h2>Report Contents</h2>
+
+    <table class="report-contents">
+        <thead>
+            <tr>
+                <th> Page </th>
+                <th> Description </th>
+                <th> Departments </th>
+                <th> Refresh </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>  <a href="execOverview.html" class="report-link">Executive Overview</a></strong></td>
+                <td>
+                    Monthly performance reporting, funnel analytics, current inventory,
+                    month-over-month changes, and month-to-date trends.
+                </td>
+                <td>
+                    PA WC<br>
+                    SSD<br>
+                    Referral<br>
+                    Washington WC<br>
+                    NJ WC, NJ Gig Worker, NJ PI, NJ ELG - Other
+                </td>
+                <td>
+                    Daily
+                </td>
+            </tr>
+            <tr>
+                <td><strong>  <a href="inv.html" class="report-link">Inventory</a></strong></td>
+                <td>
+                    Firm-wide inventory reporting including FOH and BOH inventory,
+                    headcount metrics, workload distribution, and inventory trends.
+                </td>
+                <td>
+                    PA WC<br>
+                    SSD<br>
+                    Referral<br>
+                    Washington WC<br>
+                    NJ EMP <br>
+                    Pre-Litigation
+                </td>
+                <td>
+                    Global Inventory: <i>Monthly</i>   <br><br>
+                    Tally MoM: <i>Daily</i><br>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <br>
+    
+    <div class="index-nav-container">
+      <div id="indexNextArrow" class="index-nav-arrow">❯</div>
+    </div>
+
+  </div>
 
 <script>
+  initWaffle();
+  
+  const indexNextArrow = document.getElementById("indexNextArrow");
 
-// once authentication is complete, show the hidden content and enable navigation to the next page
-async function initAuth() {
-  const embed = document.getElementById("authEmbed"); 
-  const arrow = document.getElementById("nextArrow");
-
-  await customElements.whenDefined("qlik-embed");
-
-  const checkAuth = async () => {
-    try {
-      const refApi = await embed.getRefApi();
-      const doc = await refApi.getDoc();
-
-      if (doc) {
-        console.log("Auth complete");
-
-        // show hidden content AFTER auth
-        document.getElementById("hiddenContent").classList.remove("hidden");
-        document.getElementById("authEmbed").classList.add("hidden");
-
-        arrow.classList.add("ready");
-
-        arrow.onclick = () => {
-          window.location.href = "jumbotron.html";
-        };
-
-        return true;
-      }
-    } catch {}
-
-    return false;
+  indexNextArrow.onclick = () => {
+      window.location.href = "execOverview.html";
   };
 
-  const interval = setInterval(async () => {
-    if (await checkAuth()) clearInterval(interval);
-  }, 500);
-}
+  //document.querySelector(".waffle-button").classList.remove("hidden");
+  //document.getElementById("waffle-container").classList.remove("hidden")
 
-initAuth();
 </script>
 
 </body>

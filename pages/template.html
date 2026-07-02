@@ -5,6 +5,10 @@ To use this template, copy the file to a new name and update the following:
 - Update the container ID and class in the <div> that will hold the Qlik charts (currently "container")
 - Update the renderDashboard() function to render the appropriate Qlik charts for this page - appropriate app id and chart id(s)
 - Update the navigation arrows to point to the correct previous and next pages (lines 87, 89)
+- In renderDashboard(), pass the appropriate className that you will be using for styling the Qlik charts to the wrapper() function.
+    Additionally, you may need to add new CSS classes in the <style> section to style the charts appropriately.
+    Update rows 94-97 with the appropriate className for your charts.
+- Update nav.html with the name of the new page in the correct order
 -->
 
 
@@ -37,8 +41,7 @@ To use this template, copy the file to a new name and update the following:
 
  
   <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
-  <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
-  <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
+  
 
   <h2> TEMPLATE</h2>
 
@@ -52,6 +55,11 @@ To use this template, copy the file to a new name and update the following:
   <!-- will serve as the container for the Qlik charts -->
   <div class="viz-container" id="container"></div>
 
+  <div class="nav-arrows">
+    <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
+    <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
+  </div>
+
   <script> 
     initWaffle();
 
@@ -61,73 +69,76 @@ To use this template, copy the file to a new name and update the following:
     const nextArrow = document.getElementById("nextArrow");
     const backArrow = document.getElementById("backArrow");
 
-     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
-  async function waitForQlikAuth() {
-    const actionBtn = document.getElementById("btnClear");
+    // Wait for Qlik to finish authorizing the user before showing relevant UI elements
+    async function waitForQlikAuth() {
+      const actionBtn = document.getElementById("btnClear");
 
-    await customElements.whenDefined("qlik-embed");
+      await customElements.whenDefined("qlik-embed");
 
-    const tryBind = async () => {
-      const embed = document.querySelector("qlik-embed");
-      if (!embed) return;
+      const tryBind = async () => {
+        const embed = document.querySelector("qlik-embed");
+        if (!embed) return;
 
-      try {
-        const refApi = await embed.getRefApi();
-        const doc = await refApi.getDoc();
+        try {
+          const refApi = await embed.getRefApi();
+          const doc = await refApi.getDoc();
 
-        if (doc) {
-          console.log("Qlik authorized");
+          if (doc) {
+            console.log("Qlik authorized");
 
-          btnClear.classList.remove("hidden");  
-          backArrow.classList.add("ready");
+            btnClear.classList.remove("hidden");  
+            backArrow.classList.add("ready");
 
-          backArrow.onclick = () => { window.location.href = "index.html"; };
-          nextArrow.classList.add("ready");
-          nextArrow.onclick = () => { window.location.href = "template.html"; };
+            backArrow.onclick = () => { window.location.href = "index.html"; };
+            nextArrow.classList.add("ready");
+            nextArrow.onclick = () => { window.location.href = "template.html"; };
 
-          document.querySelector(".waffle-button").classList.remove("hidden");
-          document.getElementById("waffle-container").classList.remove("hidden");
+            document.querySelector(".waffle-button").classList.remove("hidden");
+            document.getElementById("waffle-container").classList.remove("hidden");
 
-          return true;
+            document.querySelectorAll(".test-row, .test2-container").forEach(el => {
+                  el.classList.remove("hidden");
+                  el.classList.add("ready");
+            });
+
+            return true;
+          }
+        } catch (err) {
+          console.log("Error:", err);
         }
-      } catch (err) {
-        console.log("Error:", err);
-      }
 
-      return false;
-    };
+        return false;
+      };
 
-    const interval = setInterval(async () => {
-      const success = await tryBind();
-      if (success) clearInterval(interval);
-    }, 500);
-  }
+      const interval = setInterval(async () => {
+        const success = await tryBind();
+        if (success) clearInterval(interval);
+      }, 500);
+    }
 
-    //  render of the KPIs and Jumbotron chart
-  function renderDashboard() {
-    let testKPI = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "dd90cd46-c322-4d26-8445-4306b30743ae");
-      
-    const kpiRow = document.createElement("div");
-    kpiRow.classList.add("kpi-row");
+    //  render the dashboard with the appropriate Qlik charts for this page
+    function renderDashboard() {
+       let appId = "";
+      let testKPI = createChart("session-" + Date.now(), appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
+      const kpiRow = document.createElement("div");
+      kpiRow.appendChild(wrapper(testKPI, "test-class"));
 
-    kpiRow.appendChild(wrapKPI(testKPI));
+      container.appendChild(kpiRow);
 
-    container.appendChild(kpiRow);
+      waitForQlikAuth();
+    }
 
-    waitForQlikAuth();
-  }
+    renderDashboard();
 
-  renderDashboard();
+    //  Clear filters and re-render the chart with a new identity
+    function clearFilters() {
+      btnClear.classList.add("hidden");
 
-    // Clear filters and re-render the chart with a new identity
-  function clearFilters() {
-    btnClear.classList.add("hidden");
-
-    setTimeout(() => {
-      container.innerHTML = "";   // clear everything
-      renderDashboard();          // re-render fresh session
-    }, 150);
-  }
+      setTimeout(() => {
+        container.innerHTML = "";   // clear everything
+        renderDashboard();          // re-render fresh session
+      }, 150);
+    }
 
   </script>
 

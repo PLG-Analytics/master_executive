@@ -15,30 +15,6 @@
       position: relative;
     }
 
-    qlik-embed {
-      width: 100%;
-      display: block;
-      transition: opacity 0.2s ease;
-    }
-
-    .toolbar {
-      margin-bottom: 10px;
-    }
-
-    .hidden {
-      display: none;
-    }
-    
-    #btnClear {
-      background-color: #12284c;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-bottom: 5px;
-      }
-
     /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
     .kpi-row {
       display: flex;
@@ -111,32 +87,37 @@
 
 </head>
 
-<body>
-    <!-- Waffle button -->
-  <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+<body> 
+  <div class="dashboard-content">
+      <!-- Waffle button -->
+      <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
 
-  <!-- Waffle menu container -->
-  <div id="waffle-container" class="hidden"></div>
+      <!-- Waffle menu container -->
+      <div id="waffle-container" class="hidden"></div>
 
- 
-  <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
-  
+    
+      <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
+      
 
-  <h2> Jumbotron Report</h2>
+      <h1> Executive Overview</h1>
 
-  <div class="toolbar">
-    <button id="btnClear" class="hidden" onclick="clearFilters()">
-      Clear All Filters
-    </button>
-  </div>
+      <div class="toolbar">
+        <button id="btnClear" class="hidden" onclick="clearFilters()">
+          Clear All Filters
+        </button>
+      </div>
 
-  <!-- will serve as the container for the Qlik charts -->
-  <div class="overview-container" id="overviewContainer"></div>
+      <!-- will serve as the container for the Qlik charts -->
+      <div class="overview-container" id="overviewContainer"></div>
 
-  <div class="nav-arrows">
-    <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
-    <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
-  </div>
+      <div class="nav-arrows">
+        <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
+        <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
+      </div>
+
+    </div>
+
+
 <script> 
 
   initWaffle();
@@ -170,7 +151,7 @@
 
           backArrow.onclick = () => { window.location.href = "index.html"; };
           nextArrow.classList.add("ready");
-          nextArrow.onclick = () => { window.location.href = "template.html"; };
+          nextArrow.onclick = () => { window.location.href = "inv.html"; };
 
           document.querySelector(".waffle-button").classList.remove("hidden");
           document.getElementById("waffle-container").classList.remove("hidden");
@@ -200,28 +181,31 @@
 
   //  render of the KPIs and Jumbotron chart
   function renderDashboard() {
-    let kpiActiveInv = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "dd90cd46-c322-4d26-8445-4306b30743ae");
-    let kpiMoMInv = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "42a7f545-20f9-4777-ac2d-98aa64afb82d");
-    let kpiAttyHc = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "cZnxeR");
-    let kpiStaffHc = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "qjeaSpa");  
+    let appId = "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f";  // Qlik App ID
+    let kpiActiveInv = createChart("session-" + Date.now(), appId, "0332fafa-7747-42af-bcf9-58d0b577ff5c");
+    let kpiMoMInv = createChart("session-" + Date.now(), appId, "6381c2ac-28fd-432d-92a5-795d42ac754b");
+    let kpiAttyHc = createChart("session-" + Date.now(), appId, "fcd3e50e-b657-432b-817c-12ca21967eff");
+    let kpiStaffHc = createChart("session-" + Date.now(), appId, "beb8256c-74cd-4be2-b962-3f0e99c19869");  
 
     const kpiRow = document.createElement("div");
     kpiRow.classList.add("kpi-row");
 
+    // add the KPIs to the row
     kpiRow.appendChild(wrapper(kpiActiveInv, "kpi-wrapper"));
     kpiRow.appendChild(wrapper(kpiMoMInv, "kpi-wrapper"));
     kpiRow.appendChild(wrapper(kpiAttyHc, "kpi-wrapper"));
     kpiRow.appendChild(wrapper(kpiStaffHc, "kpi-wrapper"));
     container.appendChild(kpiRow);
 
-    let newJumbotron = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "1c7b6c1d-d436-44e3-84b5-c3850e7ff2f7");
+    // add the main jumbotron chart (performance month)
+    let newJumbotron = createChart("session-" + Date.now(), appId, "7005859a-d13c-4e3a-bdcd-c89b460911ea");
     container.appendChild(wrapper(newJumbotron, "jumbotron-wrapper"));
 
     // keep reference updated
     chrtJumbotron = newJumbotron;
 
     // Load in Funnel Analytics
-    let funnelBreak = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "WNYsgH"); 
+    let funnelBreak = createChart("session-" + Date.now(), appId, "d2ddb708-6b50-421a-a8ea-7e9ba1dca43b"); 
     container.appendChild(wrapper(funnelBreak, "break-wrapper"));
 
     
@@ -230,15 +214,15 @@
 
     const funnelRow1 = document.createElement("div");
     funnelRow1.classList.add("funnel-row");
-    let pivotFunnelWC = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "wQLdL"); 
-    let pivotFunnelSSD = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "aUGPhG"); 
+    let pivotFunnelWC = createChart("session-" + Date.now(), appId, "367e6ff1-36bb-4991-8def-bb09be548ca6"); 
+    let pivotFunnelSSD = createChart("session-" + Date.now(), appId, "e911d87e-c55b-4c73-a692-42cab430555f"); 
     funnelRow1.appendChild(wrapper(pivotFunnelWC, "pivot-wrapper"));
     funnelRow1.appendChild(wrapper(pivotFunnelSSD, "pivot-wrapper"));
 
     const funnelRow2 = document.createElement("div");
     funnelRow2.classList.add("funnel-row");
-    let pivotFunnelRef = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "eJnJyCj"); 
-    let pivotFunnelNJ = createChart("session-" + Date.now(), "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f", "TyDVTQ"); 
+    let pivotFunnelRef = createChart("session-" + Date.now(), appId, "37eb0fec-9c0a-487e-8f93-80a0cfe912f4"); 
+    let pivotFunnelNJ = createChart("session-" + Date.now(), appId, "cabae542-2c25-462a-b8d1-ff7824f1784e"); 
     funnelRow2.appendChild(wrapper(pivotFunnelRef, "pivot-wrapper"));
     funnelRow2.appendChild(wrapper(pivotFunnelNJ, "pivot-wrapper"));
 
@@ -252,7 +236,7 @@
 
   renderDashboard();
 
-  // Clear filters and re-render the chart with a new identity
+  //  Clear filters and re-render the chart with a new identity
   function clearFilters() {
     btnClear.classList.add("hidden");
 

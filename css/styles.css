@@ -1,12 +1,19 @@
+.page-content,
+.dashboard-content {
+    margin: 50px;
+}
+
 body {
+    margin: 0;
     font-family: Arial;
-    padding: 30px;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
 
-    
- display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-
+/* Styling the toolbar container containing the Clear Button */
+.toolbar {
+      margin-bottom: 10px;
 }
     
 #divLogo {
@@ -22,16 +29,33 @@ body {
     height: auto;
 }
 
+qlik-embed {
+      width: 100%;
+      display: block;
+      transition: opacity 0.2s ease;
+    }
+
 .hidden {
     display: none;
 }
 
+
+#btnClear {
+    background-color: #12284c;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
 /* Styling the navigation arrows container */
 .nav-arrows {
-  display: flex;
-  justify-content: space-between;
-  padding: 20px;
-   margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    margin-top: auto;
 }
 
 /* Styling the navigation arrows */
@@ -44,12 +68,9 @@ body {
     transition: opacity 0.3s;
 }
 
-
-
 .nav-arrow.ready {
   opacity: 1;
 }
-
 
 .nav-arrow-back {
     left: 20px;
