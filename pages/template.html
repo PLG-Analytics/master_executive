@@ -34,21 +34,36 @@ To use this template, copy the file to a new name and update the following:
 </head>
 
 <body>
-  <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+  <div class="dashboard-content">
+    <!-- Waffle button -->
+    <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
 
-  <!-- Waffle menu container -->
-  <div id="waffle-container" class="hidden"></div>
+    <!-- Waffle menu container -->
+    <div id="waffle-container" class="hidden"></div>
 
- 
-  <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
-  
+    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>  
 
-  <h2> TEMPLATE</h2>
+    <h1> TEMPLATE </h1>
 
-  <div class="toolbar">
-    <button id="btnClear" class="hidden" onclick="clearFilters()">
-      Clear All Filters
-    </button>
+    <div class="toolbar">
+      <button id="btnClear" class="hidden" onclick="clearFilters()"> Clear All Filters  </button>
+    </div>
+
+    <!-- will serve as the container for the Qlik charts -->
+    <div class="overview-container" id="overviewContainer"></div>
+
+    <div class="nav-arrows">
+      <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+        <span class="nav-icon">❮</span> 
+          <span class="nav-label">Home</span>
+      </div>
+
+      <div id="nextArrow" class="nav-arrow nav-arrow-next">
+        <span class="nav-label">Inventory Reports</span> 
+        <span class="nav-icon">❯</span>
+      </div>
+      </div>
+
   </div>
 
 
@@ -56,8 +71,15 @@ To use this template, copy the file to a new name and update the following:
   <div class="viz-container" id="container"></div>
 
   <div class="nav-arrows">
-    <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
-    <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
+      <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+          <span class="nav-icon">❮</span> 
+          <span class="nav-label">Inventory Reports</span>
+      </div>
+
+      <div id="nextArrow" class="nav-arrow nav-arrow-next">
+          <span class="nav-label">placeholder</span> 
+          <span class="nav-icon">❯</span>
+      </div>
   </div>
 
   <script> 
@@ -118,7 +140,7 @@ To use this template, copy the file to a new name and update the following:
 
     //  render the dashboard with the appropriate Qlik charts for this page
     function renderDashboard() {
-       let appId = "";
+       let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";
       let testKPI = createChart("session-" + Date.now(), appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
       const kpiRow = document.createElement("div");
       kpiRow.appendChild(wrapper(testKPI, "test-class"));

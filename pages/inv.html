@@ -1,10 +1,3 @@
-
-<!--
-To use this template, copy the file to a new name and update the following:
-- Update the renderDashboard() function to render the appropriate Qlik charts for this page - appropriate app id and chart id(s)
--->
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,13 +19,14 @@ To use this template, copy the file to a new name and update the following:
 
   <style>
     .inv-container {
-    width: 100%;
-    position: relative;
+        width: 100%;
+        position: relative;
     }
 
     .filter-row-wrapper {
-        width: 100%;
-        height: 75px;
+        width: 250px;
+        height: 450px;
+        flex-shrink: 0;
         margin-bottom: 10px;
         display: block;
     }
@@ -40,12 +34,14 @@ To use this template, copy the file to a new name and update the following:
     .filter-row-wrapper qlik-embed {
         width: 100%;
         height: 100%;
-        display: block;
     }
 
     .inv-charts-wrapper {
         width: calc(100% - 270px);
         height: 450px;
+        border: 1px solid #d3d3d3;
+        box-shadow: 0 2px 6px rgba(0,0,0,.10);
+        background: #fff;
     }
 
     .inv-charts-wrapper qlik-embed {
@@ -59,12 +55,6 @@ To use this template, copy the file to a new name and update the following:
         gap: 20px;
         width: 100%;
         align-items: flex-start;
-    }
-
-    .filter-row-wrapper {
-        width: 250px;
-        height: 450px;
-        flex-shrink: 0;
     }
 
     </style>
@@ -91,9 +81,18 @@ To use this template, copy the file to a new name and update the following:
     <div class="inv-container" id="inv-container"></div>
 
     <div class="nav-arrows">
-        <div id="backArrow" class="nav-arrow nav-arrow-back">❮</div>
-        <div id="nextArrow" class="nav-arrow nav-arrow-next">❯</div>
-    </div>
+            <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+                <span class="nav-icon">❮</span> 
+                <span class="nav-label">Jumbotron</span>
+            </div>
+
+            <div id="nextArrow" class="nav-arrow nav-arrow-next">
+                <span class="nav-label">TEMPLATE</span> 
+                <span class="nav-icon">❯</span>
+            </div>
+        </div>
+
+
 </div>
 
 
@@ -156,10 +155,11 @@ To use this template, copy the file to a new name and update the following:
 
     //  render the dashboard with the appropriate Qlik charts for this page
     function renderDashboard() {
-        let appId = "f56e3dde-fcdd-4fdd-b5fb-f49440ac9d3f";  // Qlik App ID
+        let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
+        let sessionId = "session-" + Date.now();  // unique session ID for this page load
 
         // dept filter
-        let deptFilter = createChart("session-" + Date.now(), appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
+        let deptFilter = createChart(sessionId, appId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
         const contentRow = document.createElement("div");
         contentRow.classList.add("content-row");
 
@@ -167,8 +167,8 @@ To use this template, copy the file to a new name and update the following:
         contentRow.appendChild(wrapper(deptFilter, "filter-row-wrapper"));
 
         // chart 
-        let invCharts = createChart("session-" + Date.now(), appId, "7dc1a579-ba00-4b2a-867a-429e068cad1a" ); // container for the charts
-        contentRow.appendChild(wrapper(invCharts, "inv-charts-wrapper"));
+        let globalInv = createChart(sessionId, appId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
+        contentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper"));
 
         container.appendChild(contentRow);
 

@@ -11,6 +11,14 @@ body {
     min-height: 100vh;
 }
 
+.dashboard-content {
+    margin: 50px;
+    min-height: calc(100vh - 100px);
+
+    display: flex;
+    flex-direction: column;
+}
+
 /* Styling the toolbar container containing the Clear Button */
 .toolbar {
       margin-bottom: 10px;
@@ -59,13 +67,32 @@ qlik-embed {
 }
 
 /* Styling the navigation arrows */
-
 .nav-arrow {
     font-size: 28px;
     cursor: pointer;
     color: #2d6fb7;
     opacity: 0;
     transition: opacity 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.nav-icon {
+    font-size: 28px;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+}
+
+
+.nav-label {
+    font-size: 15px;
+    color: #2d6fb7;
+    display: flex;
+    align-items: center;
+    text-transform: uppercase;
+    font-weight: bold;
 }
 
 .nav-arrow.ready {
@@ -78,17 +105,6 @@ qlik-embed {
 
 .nav-arrow-next {
     right: 20px;
-}
-
-
-/* Hidden state */
-.hidden {
-    display: none;
-}
-
-/* Hide menu initially */
-.hidden {
-    display: none;
 }
 
 /* Styling the waffle button-like image */

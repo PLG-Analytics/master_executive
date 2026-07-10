@@ -55,7 +55,7 @@ function initWaffle() {
   setupOutsideClickClose();
 }
 
- // generate qlik with a unique identity for each session with appId and objectId
+// generate qlik with a unique identity for each session with appId and objectId
 function createChart(identity, appId, objectId) {
   const embed = document.createElement("qlik-embed");
 
@@ -64,13 +64,18 @@ function createChart(identity, appId, objectId) {
   embed.setAttribute("object-id", objectId);
   embed.setAttribute("identity", identity);
 
-    return embed;
-  }
+  return embed;
+}
 
-   // function to wrap different charts with a className that will be used for styling
-  function wrapper(chart, className) {
-    const wrapper = document.createElement("div");
-    wrapper.classList.add(className, "hidden");
-    wrapper.appendChild(chart);
-    return wrapper;
+// function to wrap different charts with a className that will be used for styling
+function wrapper(chart, className) {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add(className, "hidden");
+  wrapper.appendChild(chart);
+
+  // Only add the full screen option to pivot charts
+  if (className === "pivot-wrapper") {
+     addFullscreenButton(wrapper);
   }
+  return wrapper;
+}

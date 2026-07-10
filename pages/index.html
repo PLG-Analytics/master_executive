@@ -10,79 +10,86 @@
 
 
 <style>
-  .index-nav-container {
-    width: 100%;
-    margin-top: 40px;
-  }
+    .index-nav-container {
+        width: 100%;
+        margin-top: 40px;
+    }
 
   .index-nav-arrow {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
 
-      font-size: 28px;
-      color: #2d6fb7;
-      cursor: pointer;
-      user-select: none;
-      z-index: 1000;
-  }
+        display: flex;
+        align-items: center;
+        gap: 8px;
 
-  .index-nav-arrow:hover {
-      color: #1f4f82;
-  }
+        white-space: nowrap;
 
-  .report-contents {
-      width: 100%;
-      max-width: 1400px;
-      border-collapse: collapse;
-      margin-top: 20px;
-      border: 2px solid #12284c;   /* outer border */
-  }
+        font-size: 28px;
+        color: #2d6fb7;
+        font-weight: bold;
+        cursor: pointer;
+        user-select: none;
+        z-index: 1000;
+    }
 
-  .report-contents th {
-      background-color: #12284c;
-      color: white;
-      text-align: left;
-      padding: 12px;
-      border: 1px solid #12284c;
-  }
+    .index-nav-arrow:hover {
+        color: #1f4f82;
+    }
 
-  .report-contents td {
-      padding: 12px;
-      border: 1px solid #12284c;
-      vertical-align: top;
-      line-height: 1.6;
-  }
+    .report-contents {
+        width: 100%;
+        max-width: 1550px;
+        border-collapse: collapse;
+        margin-top: 20px;
+        border: 2px solid #12284c;   /* outer border */
+    }
 
-  .report-contents tr:nth-child(even) {
-      background-color: #f8f9fb;
-  }
+    .report-contents th {
+        background-color: #12284c;
+        color: white;
+        text-align: left;
+        padding: 12px;
+        border: 1px solid #12284c;
+    }
 
-  .report-contents tbody tr {
-      transition: background-color 0.2s ease;
-  }
+    .report-contents td {
+        padding: 12px;
+        border: 1px solid #12284c;
+        vertical-align: top;
+        line-height: 1.6;
+    }
 
-  .report-contents tbody tr:hover {
-      background-color: #eef4fb;
-  }
+    .report-contents tr:nth-child(even) {
+        background-color: #f8f9fb;
+    }
 
-  .report-contents tbody tr:hover td:first-child {
-      border-left: 4px solid #2d6fb7;
-  }
+    .report-contents tbody tr {
+        transition: background-color 0.2s ease;
+    }
 
-  .report-link {
-      color: #2d6fb7;
-      text-decoration: none;
-      font-weight: 600;
-  }
+    .report-contents tbody tr:hover {
+        background-color: #eef4fb;
+    }
 
-  .report-link:hover {
-      color: #1f4f82;
-      text-decoration: underline;
-  }
+    .report-contents tbody tr:hover td:first-child {
+        border-left: 4px solid #2d6fb7;
+    }
 
+    .report-link {
+        color: #2d6fb7;
+        text-decoration: none;
+        font-weight: 600;
+    }
 
+    .report-link:hover {
+        color: #1f4f82;
+        text-decoration: underline;
+    }
 </style>
+
+
 <body>
   <div class="page-content">
     <!-- Waffle button -->
@@ -104,11 +111,28 @@
 
     <p><strong>Refresh Schedule:</strong> Daily at approximately 1:00 AM EST</p>
 
-    <p><strong>Data Sources:</strong> PLG operational systems and reporting platforms</p>
+    <p><strong>Data Sources:</strong> Litify, Case Xchange</p>
 
     <p><strong>Reporting Methodology:</strong> Inventory and performance metrics are based on the firm's stage-based reporting framework implemented in June 2026.</p>
 
     <p><strong>Support Contacts:</strong> Megha Patel (mpatel@pondlehocky.com) and Kevin Doyle (kdoyle@pondlehocky.com)</p>
+
+    <br>
+
+
+    <h2>Usage Notes</h2>
+
+    <p>
+        <strong>Filtering:</strong> Columns displaying the ☰ menu support filtering and selections.
+    </p>
+
+    <p>
+        <strong>Finding Values:</strong> Open the ☰ menu and use Search to quickly locate specific values.
+    </p>
+
+    <p>
+        <strong>Filter Selections:</strong> Selections do not carry between pages. Each page maintains its own filters. Similarly, <i>Clear All Filters</i> only applies to the current page.
+    </p>
 
     <br>
 
@@ -165,8 +189,9 @@
 
     <br>
     
-    <div class="index-nav-container">
-      <div id="indexNextArrow" class="index-nav-arrow">❯</div>
+    <div id="indexNextArrow" class="index-nav-arrow">
+        <span class="nav-label">Executive Overview</span>
+        <span class="nav-icon">❯</span>
     </div>
 
   </div>
