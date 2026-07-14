@@ -128,6 +128,67 @@
         font-size: 15.5px !important;
     }
 
+    
+    #btnDataContext {
+        background-color: #0097ce;
+        color: white;
+        border: none;
+        padding: 8px 14px;
+        border-radius: 6px;
+        cursor: pointer;
+        margin-bottom: 5px;
+    }
+
+    /* Data Context Popup */
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 10000;
+    }
+
+    .modal.hidden {
+        display: none;
+    }
+
+    .modal-context {       
+        background: white;
+        width: 700px;
+        max-width: 90%;
+        padding: 30px 35px;
+        border-radius: 8px;
+        position: relative;
+    }
+
+    .data-context-list {
+        margin-top: 20px;
+        padding-left: 24px;
+    }
+    
+    .data-context-list li {
+        margin-bottom: 16px;
+        line-height: 1.5;
+        font-size: 16px;
+    }
+
+    .data-context-list li:last-child {
+        margin-bottom: 0;
+    }
+
+
+    .close-modal {
+        position: absolute;
+        top: 10px;
+        right: 15px;
+        font-size: 24px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    
   </style>
 
   
@@ -140,6 +201,22 @@
   </script>
 
 </head>
+
+
+<!-- Data Context Popup -->
+<div id="dataContextModal" class="modal hidden">
+    <div class="modal-context">
+        <span class="close-modal" onclick="closeDataContext()">&times;</span>
+        <h3>Data Context</h3>
+
+        <div class="data-context-list">
+            <p><strong>Litify Go-Live:</strong> Washington and NJ WC were onboarded in June 2026.</p>
+            <p><strong>Washington WC:</strong> Includes deduplicated matters migrated from DearLegal.</p>
+            <p><strong>NJ WC:</strong> Case statuses are not actively maintained in Litify as of July 14, 2026.</p>
+        </div>
+    </div>
+</div>
+
 
 <body> 
     <div class="dashboard-content">
@@ -155,6 +232,7 @@
 
         <div class="toolbar">
             <button id="btnClear" class="hidden" onclick="clearFilters()"> Clear All Filters </button>
+            <button id="btnDataContext" class="hidden" onclick="openDataContext()"> Data Context </button>
         </div>
 
         <!-- will serve as the container for the Qlik charts -->
@@ -181,12 +259,12 @@
     // Get references to the container, clear button, and navigation arrows
     const container = document.getElementById("overviewContainer");
     const btnClear = document.getElementById("btnClear");
+    const btnDataContext = document.getElementById("btnDataContext");
     const nextArrow = document.getElementById("nextArrow");
     const backArrow = document.getElementById("backArrow");
   
     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
     async function waitForQlikAuth() {
-        const actionBtn = document.getElementById("btnClear");
 
         await customElements.whenDefined("qlik-embed");
 
@@ -201,7 +279,8 @@
             if (doc) {
             console.log("Qlik authorized");
 
-            btnClear.classList.remove("hidden");  
+            btnClear.classList.remove("hidden");
+            btnDataContext.classList.remove("hidden");  
             backArrow.classList.add("ready");
 
             backArrow.onclick = () => { window.location.href = "index.html"; };
@@ -375,11 +454,22 @@
     // Clear filters and re-render the chart with a new identity
     function clearFilters() {
         btnClear.classList.add("hidden");
+        btnDataContext.classList.add("hidden");
 
         setTimeout(() => {
         container.innerHTML = "";   // clear everything
         renderDashboard();          // re-render fresh session
         }, 150);
+    }
+
+    function openDataContext() {
+        document.getElementById("dataContextModal")
+            .classList.remove("hidden");
+    }
+
+    function closeDataContext() {
+        document.getElementById("dataContextModal")
+            .classList.add("hidden");
     }
 
 </script>
