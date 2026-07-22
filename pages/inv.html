@@ -38,7 +38,7 @@
 
     .inv-charts-wrapper {
         width: calc(100% - 270px);
-        height: 450px;
+        height: 650px;
         border: 1px solid #d3d3d3;
         box-shadow: 0 2px 6px rgba(0,0,0,.10);
         background: #fff;
@@ -56,6 +56,13 @@
         width: 100%;
         align-items: flex-start;
     }
+
+
+     /* Adjusting font size and padding for pivot charts to improve readability */
+    .inv-charts-wrapper [data-section-id="GRID"] * {
+        font-size: 15.5px !important;
+    }
+
 
     </style>
 
@@ -76,6 +83,7 @@
     <div class="toolbar">
         <button id="btnClear" class="hidden" onclick="clearFilters()">  Clear All Filters  </button>
     </div>
+    
 
     <!-- will serve as the container for the Qlik charts -->
     <div class="inv-container" id="inv-container"></div>
@@ -85,12 +93,7 @@
                 <span class="nav-icon">❮</span> 
                 <span class="nav-label">Jumbotron</span>
             </div>
-
-            <div id="nextArrow" class="nav-arrow nav-arrow-next">
-                <span class="nav-label">TEMPLATE</span> 
-                <span class="nav-icon">❯</span>
-            </div>
-        </div>
+    </div>
 
 
 </div>
@@ -103,8 +106,14 @@
     // Get references to the container, clear button, and navigation arrows
     const container = document.getElementById("inv-container");
     const btnClear = document.getElementById("btnClear");
-    const nextArrow = document.getElementById("nextArrow");
     const backArrow = document.getElementById("backArrow");
+
+    // to allow for updating the chart on the first selection of a filter, we need to track whether the chart has been reloaded yet
+    let chartReloaded = false;
+    let currentSessionId;
+    let currentAppId;
+    let currentContentRow;
+
 
      // Wait for Qlik to finish authorizing the user before showing relevant UI elements
     async function waitForQlikAuth() {
@@ -114,6 +123,7 @@
         const embed = document.querySelector("qlik-embed");
         if (!embed) return;
 
+        // Check if the Qlik app is authorized
         try {
             const refApi = await embed.getRefApi();
             const doc = await refApi.getDoc();
@@ -125,8 +135,6 @@
                 backArrow.classList.add("ready");
 
                 backArrow.onclick = () => { window.location.href = "execOverview.html"; };
-                nextArrow.classList.add("ready");
-                nextArrow.onclick = () => { window.location.href = "template.html"; };
 
                 document.querySelector(".waffle-button").classList.remove("hidden");
                 document.getElementById("waffle-container").classList.remove("hidden");
@@ -153,28 +161,78 @@
 
     //  render the dashboard with the appropriate Qlik charts for this page
     function renderDashboard() {
-        let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
-        let sessionId = "session-" + Date.now();  // unique session ID for this page load
+        currentAppId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776"; // Qlik App ID
+
+        if (!currentSessionId) { // unique session ID for this page load
+            currentSessionId = "session-" + Date.now();
+        }
 
         // dept filter
-        let deptFilter = createChart(sessionId, appId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
-        const contentRow = document.createElement("div");
-        contentRow.classList.add("content-row");
-
+        let deptFilter = createChart(currentSessionId, currentAppId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
+        currentContentRow = document.createElement("div");
+        currentContentRow.classList.add("content-row");
         // filter
-        contentRow.appendChild(wrapper(deptFilter, "filter-row-wrapper"));
+        const filterWrapper = wrapper(deptFilter, "filter-row-wrapper");
+
+        // Add a click event listener to the filter wrapper to reload the chart when a filter is selected
+        filterWrapper.addEventListener(
+            "click",
+            () => {
+                if (chartReloaded) return;
+
+                chartReloaded = true;
+
+                setTimeout(() => {
+                    reloadChartOnly();
+                }, 1000); // gives Qlik time to apply selection
+            },
+            { once: true }
+        );
+
+        currentContentRow.appendChild(filterWrapper);
 
         // chart 
-        let globalInv = createChart(sessionId, appId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
-        contentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper"));
+        let globalInv = createChart(currentSessionId, currentAppId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
+        currentContentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper"));
 
-        container.appendChild(contentRow);
-
+        container.appendChild(currentContentRow);
+            
         waitForQlikAuth();
     }
 
-    renderDashboard();
+    // reload the chart with a new session ID, but keep the same filters applied - Important for initial filter selection to be applied to the chart
+    function reloadChartOnly() {
+        console.log("reloadChartOnly called");
 
+        const oldWrapper = document.querySelector(".inv-charts-wrapper");
+
+        if (!oldWrapper) return;
+
+        const parent = oldWrapper.parentNode;
+
+        oldWrapper.remove();
+
+        const newChart = createChart(
+            currentSessionId,
+            currentAppId,
+            "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6"
+        );
+
+        const newWrapper = wrapper(newChart, "inv-charts-wrapper");
+        newWrapper.classList.remove("hidden");
+        
+        parent.appendChild(newWrapper);
+
+        waitForQlikAuth();
+        document.querySelectorAll('.sn-copy-cell[title]')
+    .forEach(cell => {
+        console.log(cell.title, cell.style.width);
+    });
+        console.log("Chart regenerated");
+    }
+
+    renderDashboard();
+    
     //  Clear filters and re-render the chart with a new identity
     function clearFilters() {
         btnClear.classList.add("hidden");

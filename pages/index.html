@@ -10,13 +10,17 @@
 
 
 <style>
+    
     .index-nav-container {
         width: 100%;
-        margin-top: 40px;
+        margin-top: auto;
+        padding-top: 20px;
+
+        display: flex;
+        justify-content: flex-end;
     }
 
-  .index-nav-arrow {
-        position: fixed;
+    .index-nav-arrow {
         bottom: 20px;
         right: 20px;
 
@@ -180,7 +184,7 @@
                     Pre-Litigation
                 </td>
                 <td>
-                    Global Inventory: <i>Monthly</i>   <br><br>
+                    Global Inventory: <i>Daily</i>   <br><br>
                     Tally MoM: <i>Daily</i><br>
                 </td>
             </tr>
@@ -189,10 +193,14 @@
 
     <br>
     
-    <div id="indexNextArrow" class="index-nav-arrow">
-        <span class="nav-label">Executive Overview</span>
-        <span class="nav-icon">❯</span>
+    
+    <div class="index-nav-container">
+        <div id="indexNextArrow" class="index-nav-arrow">
+            <span class="nav-label">Executive Overview</span>
+            <span class="nav-icon">❯</span>
+        </div>
     </div>
+
 
   </div>
 

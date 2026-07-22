@@ -45,14 +45,31 @@
     .jumbotron-wrapper {
         width: 100%;
         height: 450px; 
-        margin-bottom: 10px;
-        margin-top: 10px;
+        margin-bottom: 15px;
+        margin-top: 15px;
         box-shadow: 0 2px 6px rgba(0,0,0,.10);
     }
 
     .jumbotron-wrapper qlik-embed {
         width: 100%;
         height: 100%;
+    }
+
+    /* Adjusting font size and padding for pivot charts to improve readability */
+    .jumbotron-wrapper [data-section-id="GRID"] * {
+        font-size: 15.5px !important;
+    }
+    
+    /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+    .jumbotron-wrapper .fullscreen-btn {
+        top: 175px !important;
+        right: 10px !important;
+    }
+
+    /* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+    .jumbotron-wrapper.browser-fullscreen .fullscreen-btn {
+        top: 20px !important;
+        right: 20px !important;
     }
 
     /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
@@ -110,7 +127,8 @@
         height: 25px;
     }
 
-    .pivot-wrapper.browser-fullscreen {
+    .pivot-wrapper.browser-fullscreen,
+    .jumbotron-wrapper.browser-fullscreen {
         position: fixed;
         top: 0;
         left: 0;
@@ -122,7 +140,7 @@
         box-sizing: border-box;
         border: none !important;
     }
-
+    
     /* Adjusting font size and padding for pivot charts to improve readability */
     .pivot-wrapper [data-section-id="GRID"] * {
         font-size: 15.5px !important;
@@ -178,7 +196,6 @@
         margin-bottom: 0;
     }
 
-
     .close-modal {
         position: absolute;
         top: 10px;
@@ -187,7 +204,6 @@
         font-weight: bold;
         cursor: pointer;
     }
-
     
   </style>
 
@@ -211,6 +227,7 @@
 
         <div class="data-context-list">
             <p><strong>Litify Go-Live:</strong> Washington and NJ WC were onboarded in June 2026.</p>
+            <p><strong>HC</strong> Headcount is updated monthly.</p>
             <p><strong>Washington WC:</strong> Includes deduplicated matters migrated from DearLegal.</p>
             <p><strong>NJ WC:</strong> Case statuses are not actively maintained in Litify as of July 14, 2026.</p>
         </div>
@@ -234,6 +251,8 @@
             <button id="btnClear" class="hidden" onclick="clearFilters()"> Clear All Filters </button>
             <button id="btnDataContext" class="hidden" onclick="openDataContext()"> Data Context </button>
         </div>
+
+        <div id="divFilterBar"></div>
 
         <!-- will serve as the container for the Qlik charts -->
         <div class="overview-container" id="overviewContainer"></div>
@@ -262,7 +281,9 @@
     const btnDataContext = document.getElementById("btnDataContext");
     const nextArrow = document.getElementById("nextArrow");
     const backArrow = document.getElementById("backArrow");
-  
+    let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
+    let sessionId = "session-" + Date.now();
+
     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
     async function waitForQlikAuth() {
 
@@ -290,7 +311,6 @@
             document.querySelector(".waffle-button").classList.remove("hidden");
             document.getElementById("waffle-container").classList.remove("hidden");
 
-            
             document.querySelectorAll(".pivot-wrapper, .kpi-wrapper, .jumbotron-wrapper, .break-wrapper, .fullscreen-btn").forEach(el => {
                 el.classList.remove("hidden");
                 el.classList.add("ready");
@@ -312,58 +332,8 @@
         }, 500);
     }
 
-    // Add a full screen button to pivot charts
-    function addFullscreenButton(wrapperElement) {
-        const btn = document.createElement("button");
-        btn.className = "fullscreen-btn hidden";
-        btn.title = "Full Screen";
-
-        // Create icon
-        const icon = document.createElement("img");
-        icon.src = "../Images/expand.png";     // adjust path if needed
-        icon.alt = "Expand";
-
-        btn.appendChild(icon);
-
-        btn.addEventListener("click", (e) => {
-            e.stopPropagation();
-
-            wrapperElement.classList.toggle("browser-fullscreen");
-
-            if (wrapperElement.classList.contains("browser-fullscreen")) {
-                icon.src = "../Images/collapse.png";
-                icon.alt = "Collapse";
-                btn.title = "Restore Size";
-            } else {
-                icon.src = "../Images/expand.png";
-                icon.alt = "Expand";
-                btn.title = "Full Screen";
-            }
-        });
-
-        wrapperElement.appendChild(btn);
-    }
-
-    // Create a wrapper around a Qlik chart
-    function wrapper(chart, className) {
-        const div = document.createElement("div");
-
-        div.classList.add(className);
-        div.appendChild(chart);
-
-        // Only add the full screen option to pivot charts
-        if (className === "pivot-wrapper") {
-            addFullscreenButton(div);
-        }
-
-        return div;
-    }
-
     //  render of the KPIs and Jumbotron chart
-    function renderDashboard() {
-        let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
-        const sessionId = "session-" + Date.now();
-
+    function renderDashboard() {    
         let kpiActiveInv = createChart(sessionId, appId, "0332fafa-7747-42af-bcf9-58d0b577ff5c");
         let kpiMoMInv = createChart(sessionId, appId, "6381c2ac-28fd-432d-92a5-795d42ac754b");
         let kpiAttyHc = createChart(sessionId, appId, "fcd3e50e-b657-432b-817c-12ca21967eff");
@@ -429,7 +399,6 @@
             "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776",
             "0332fafa-7747-42af-bcf9-58d0b577ff5c"
         );
-
         authChart.style.display = "none";
         document.body.appendChild(authChart);
 
@@ -443,6 +412,14 @@
             authChart.remove();
 
             renderDashboard();
+
+            // set up filter bar
+            const selectionWrapper = document.createElement("div"); // create wrapper for formating 
+            selectionWrapper.classList.add("filter-bar-wrapper");
+
+            const selectionBar = createSelectionBar(sessionId, appId); // create selection bar with unique identity
+            selectionWrapper.appendChild(selectionBar);
+            document.getElementById("divFilterBar").appendChild(selectionWrapper);
         }
         catch (err) {
             console.error("Qlik authentication failed:", err);
@@ -452,14 +429,15 @@
     initializeDashboard();
 
     // Clear filters and re-render the chart with a new identity
-    function clearFilters() {
-        btnClear.classList.add("hidden");
-        btnDataContext.classList.add("hidden");
+    async function clearFilters() {
+        const embed = document.querySelector('#divFilterBar qlik-embed');
 
-        setTimeout(() => {
-        container.innerHTML = "";   // clear everything
-        renderDashboard();          // re-render fresh session
-        }, 150);
+        if (embed) {
+            const refApi = await embed.getRefApi();
+            const app = await refApi.getDoc();
+
+            await app.clearAll();
+        }
     }
 
     function openDataContext() {

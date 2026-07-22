@@ -19,7 +19,7 @@ body {
     flex-direction: column;
 }
 
-/* Styling the toolbar container containing the Clear Button */
+/* Styling the toolbar container containing the Clear + Context Buttons */
 .toolbar {
       margin-bottom: 10px;
 }
@@ -165,6 +165,14 @@ qlik-embed {
 .waffle-grid a.active { 
     background: #e8edf5;
     font-weight: 600;
+}
+
+#divFilterBar {
+    padding-bottom: 15px;
+}
+
+.filter-bar-wrapper {
+    width: 100%;
 }
 
 /* Control height of the section breaks */
