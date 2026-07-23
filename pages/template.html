@@ -9,6 +9,7 @@ To use this template, copy the file to a new name and update the following:
     Additionally, you may need to add new CSS classes in the <style> section to style the charts appropriately.
     Update rows 94-97 with the appropriate className for your charts.
 - Update nav.html with the name of the new page in the correct order
+- Update home page with an overview of the new page and a link to it
 -->
 
 
@@ -55,31 +56,15 @@ To use this template, copy the file to a new name and update the following:
     <div class="nav-arrows">
       <div id="backArrow" class="nav-arrow nav-arrow-back"> 
         <span class="nav-icon">❮</span> 
-          <span class="nav-label">Home</span>
+          <span class="nav-label">PREV PAGE</span>
       </div>
 
       <div id="nextArrow" class="nav-arrow nav-arrow-next">
-        <span class="nav-label">Inventory Reports</span> 
+        <span class="nav-label">NEXT PAGE</span> 
         <span class="nav-icon">❯</span>
       </div>
       </div>
 
-  </div>
-
-
-  <!-- will serve as the container for the Qlik charts -->
-  <div class="viz-container" id="container"></div>
-
-  <div class="nav-arrows">
-      <div id="backArrow" class="nav-arrow nav-arrow-back"> 
-          <span class="nav-icon">❮</span> 
-          <span class="nav-label">Inventory Reports</span>
-      </div>
-
-      <div id="nextArrow" class="nav-arrow nav-arrow-next">
-          <span class="nav-label">placeholder</span> 
-          <span class="nav-icon">❯</span>
-      </div>
   </div>
 
   <script> 
@@ -90,6 +75,9 @@ To use this template, copy the file to a new name and update the following:
     const btnClear = document.getElementById("btnClear");
     const nextArrow = document.getElementById("nextArrow");
     const backArrow = document.getElementById("backArrow");
+    let appId = "";  // Qlik App ID
+    let sessionId = "session-" + Date.now();
+
 
     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
     async function waitForQlikAuth() {
@@ -140,8 +128,7 @@ To use this template, copy the file to a new name and update the following:
 
     //  render the dashboard with the appropriate Qlik charts for this page
     function renderDashboard() {
-       let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";
-      let testKPI = createChart("session-" + Date.now(), appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
+      let testKPI = createChart(sessionId, appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
       const kpiRow = document.createElement("div");
       kpiRow.appendChild(wrapper(testKPI, "test-class"));
 
@@ -152,14 +139,16 @@ To use this template, copy the file to a new name and update the following:
 
     renderDashboard();
 
-    //  Clear filters and re-render the chart with a new identity
-    function clearFilters() {
-      btnClear.classList.add("hidden");
+    // Clear filters and re-render the chart with a new identity
+    async function clearFilters() {
+        const embed = document.querySelector('#divFilterBar qlik-embed');
 
-      setTimeout(() => {
-        container.innerHTML = "";   // clear everything
-        renderDashboard();          // re-render fresh session
-      }, 150);
+        if (embed) {
+            const refApi = await embed.getRefApi();
+            const app = await refApi.getDoc();
+
+            await app.clearAll();
+        }
     }
 
   </script>

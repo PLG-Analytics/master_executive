@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Qlik Web Components library -->
+    <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/utils.js"></script>
+
+    <style>
+      .ref-container {
+        width: 100%; 
+        position: relative;
+      }
+
+      .kpi-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-bottom: 15px;
+      }
+
+      .kpi-unit {
+          min-width: 0;
+      }
+
+      .kpi-unit-quarters {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 8px;
+      }
+
+      .kpi-unit-halves {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 8px;
+      }
+
+      .kpi-full-row,
+      .kpi-half-row,
+      .kpi-quarter-row {
+          min-height: 130px;
+          height: 130px;
+
+          border: 1px solid #d3d3d3;
+          box-shadow: 0 3px 7px rgba(0,0,0,.10);
+          background: #fff;
+
+          min-width: 0;
+      }
+
+      .kpi-full-row qlik-embed,
+      .kpi-half-row qlik-embed,
+      .kpi-quarter-row qlik-embed {
+          width: 100%;
+          height: 100%;
+          display: block;
+      }
+
+      .kpi-row-last {
+          height: 275px;
+      }
+
+      .tb-saltz {
+          height: 100%;
+      }
+    </style>
+
+    <script
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
+  </script>
+
+</head>
+
+<body>
+  <div class="dashboard-content">
+    <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+
+    <!-- Waffle menu container -->
+    <div id="waffle-container" class="hidden"></div>
+
+    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>  
+
+    <h1> Referral Executive Summary </h1>
+
+    <!-- will serve as the container for the Qlik charts -->
+    <div class="ref-container" id="refContainer"></div>
+
+    <div class="nav-arrows">
+      <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+        <span class="nav-icon">❮</span> 
+          <span class="nav-label">Inventory Reports</span> 
+      </div>
+    </div>
+
+  </div>
+
+  <script> 
+    initWaffle();
+
+    // Get references to the container, clear button, and navigation arrows
+    const container = document.getElementById("refContainer");
+    const backArrow = document.getElementById("backArrow");
+    let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
+    let sessionId = "session-" + Date.now();
+
+
+    // Wait for Qlik to finish authorizing the user before showing relevant UI elements
+    async function waitForQlikAuth() {
+
+      await customElements.whenDefined("qlik-embed");
+      
+      const tryBind = async () => {
+        const embed = document.querySelector("qlik-embed");
+        if (!embed) return;
+        
+        try {
+            const refApi = await embed.getRefApi();
+            const doc = await refApi.getDoc();
+
+            if (doc) {
+                console.log("Qlik authorized");
+
+                backArrow.classList.add("ready");
+                backArrow.onclick = () => { window.location.href = "inv.html"; };
+
+                document.querySelector(".waffle-button").classList.remove("hidden");
+                document.getElementById("waffle-container").classList.remove("hidden");
+
+                document.querySelectorAll(".kpi-row, .kpi-full-row, .kpi-quarter-row, .kpi-half-row").forEach(el => {
+                    el.classList.remove("hidden");
+                    el.classList.add("ready");
+                });
+
+            return true;
+          }
+        } catch (err) {
+          console.log("Error:", err);
+        }
+
+        return false;
+      };
+
+      const interval = setInterval(async () => {
+        const success = await tryBind();
+        if (success) clearInterval(interval);
+      }, 500);
+    }
+
+    //  render the dashboard with the appropriate Qlik charts for this page
+    function renderDashboard() {
+
+      // Row 1: Created yesterday; Sent this month
+      const kpiRow1 = document.createElement("div");
+      kpiRow1.classList.add("kpi-row");
+
+      const row1Unit1 = document.createElement("div");
+      row1Unit1.classList.add("kpi-unit");
+
+      let refCreatedYest = createChart(sessionId, appId, "HxzrgR");
+      row1Unit1.appendChild(wrapper(refCreatedYest, "kpi-full-row"));
+
+      const row1Unit2 = document.createElement("div");
+      row1Unit2.classList.add("kpi-unit");
+
+      let refSentThisMonth = createChart(sessionId, appId, "KpwJBx");
+      row1Unit2.appendChild(wrapper(refSentThisMonth, "kpi-full-row"));
+
+      kpiRow1.appendChild(row1Unit1);
+      kpiRow1.appendChild(row1Unit2);
+
+
+      // Row 2: Created yesterday & under review; Finch, NJ PI, NJ Gig, NJ Other Signed this month
+      const kpiRow2 = document.createElement("div");
+      kpiRow2.classList.add("kpi-row");
+
+      const row2Unit1 = document.createElement("div");
+      row2Unit1.classList.add("kpi-unit");
+
+      let refCreatedYestUR = createChart(sessionId, appId, "Eube");
+      row2Unit1.appendChild(wrapper(refCreatedYestUR, "kpi-full-row"));
+
+      const row2Unit2 = document.createElement("div");
+      row2Unit2.classList.add("kpi-unit-quarters");
+
+      let refFinchSigned = createChart(sessionId, appId, "EJpJW");
+      row2Unit2.appendChild(wrapper(refFinchSigned, "kpi-quarter-row"));
+
+      let refNJPISigned = createChart(sessionId, appId, "PcAEtAQ");
+      row2Unit2.appendChild(wrapper(refNJPISigned, "kpi-quarter-row"));
+
+      let refNJGigSigned = createChart(sessionId, appId, "MfbrBEA");
+      row2Unit2.appendChild(wrapper(refNJGigSigned, "kpi-quarter-row"));
+
+      let refNJOtherSigned = createChart(sessionId, appId, "dMFj");
+      row2Unit2.appendChild(wrapper(refNJOtherSigned, "kpi-quarter-row"));
+
+      kpiRow2.appendChild(row2Unit1);
+      kpiRow2.appendChild(row2Unit2);
+
+
+      // Row 3: Finch, NJ PI, NJ Gig, NJ Other Signed this yesterday; Traditional Ref Signed this month; Tier 5 Signed this month
+      const kpiRow3 = document.createElement("div");
+      kpiRow3.classList.add("kpi-row");
+
+      const row3Unit1 = document.createElement("div");
+      row3Unit1.classList.add("kpi-unit-quarters");
+
+      let refFinchSignedYest = createChart(sessionId, appId, "FapkJNe");
+      row3Unit1.appendChild(wrapper(refFinchSignedYest, "kpi-quarter-row"));
+
+      let refNJPISignedYest = createChart(sessionId, appId, "hNPWR");
+      row3Unit1.appendChild(wrapper(refNJPISignedYest, "kpi-quarter-row"));
+
+      let refNJGigSignedYest = createChart(sessionId, appId, "xTRpWe");
+      row3Unit1.appendChild(wrapper(refNJGigSignedYest, "kpi-quarter-row"));
+
+      let refNJOtherSignedYest = createChart(sessionId, appId, "jxHRtSJ");
+      row3Unit1.appendChild(wrapper(refNJOtherSignedYest, "kpi-quarter-row"));
+
+      const row3Unit2 = document.createElement("div");
+      row3Unit2.classList.add("kpi-unit-halves");
+
+      let refTradSigned = createChart(sessionId, appId, "pBJE");
+      row3Unit2.appendChild(wrapper(refTradSigned, "kpi-half-row"));
+
+      let refTier5Signed = createChart(sessionId, appId, "KaafPxN");
+      row3Unit2.appendChild(wrapper(refTier5Signed, "kpi-half-row"));
+
+      kpiRow3.appendChild(row3Unit1);
+      kpiRow3.appendChild(row3Unit2);
+
+
+      // Row 4: Traditional Referral signed yesterday; Referrals created yesterday & pending
+      const kpiRow4 = document.createElement("div");
+      kpiRow4.classList.add("kpi-row");
+
+      const row4Unit1 = document.createElement("div");
+      row4Unit1.classList.add("kpi-unit-halves");
+
+      let refTradSignedYest = createChart(sessionId, appId, "FYXNwd");
+      row4Unit1.appendChild(wrapper(refTradSignedYest, "kpi-half-row"));
+
+      let refPendingYest = createChart(sessionId, appId, "EZPyJY");
+      row4Unit1.appendChild(wrapper(refPendingYest, "kpi-half-row"));
+
+      const row4Unit2 = document.createElement("div");
+      row4Unit2.classList.add("kpi-unit");
+
+      let refSaltzSigned = createChart(sessionId, appId, "dCdjbA");
+      row4Unit2.appendChild(wrapper(refSaltzSigned, "kpi-full-row"));
+
+      kpiRow4.appendChild(row4Unit1);
+      kpiRow4.appendChild(row4Unit2);
+
+
+      // Row 5: Created yesterday & cancelled; Top Case type and Jurisdiction
+      const kpiRow5 = document.createElement("div");
+      kpiRow5.classList.add("kpi-row", "kpi-row-last");
+
+      const row5Unit1 = document.createElement("div");
+      row5Unit1.classList.add("kpi-unit");
+
+      let refCreatedYestCancelled = createChart(sessionId, appId, "kGp");
+      row5Unit1.appendChild(wrapper(refCreatedYestCancelled, "kpi-full-row"));
+
+      const row5Unit2 = document.createElement("div");
+      row5Unit2.classList.add("kpi-unit");
+
+      let refTopCaseType = createChart(sessionId, appId, "VghWYs");
+      row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-saltz"));
+
+      kpiRow5.appendChild(row5Unit1);
+      kpiRow5.appendChild(row5Unit2);
+
+      container.appendChild(kpiRow1);
+      container.appendChild(kpiRow2);
+      container.appendChild(kpiRow3);
+      container.appendChild(kpiRow4);
+      container.appendChild(kpiRow5);
+
+      waitForQlikAuth();
+  } 
+    
+    renderDashboard();
+
+  </script>
+
+</body>

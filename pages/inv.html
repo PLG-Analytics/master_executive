@@ -40,7 +40,7 @@
         width: calc(100% - 270px);
         height: 650px;
         border: 1px solid #d3d3d3;
-        box-shadow: 0 2px 6px rgba(0,0,0,.10);
+        box-shadow: 0 3px 7px rgba(0,0,0,.10);
         background: #fff;
     }
 
@@ -71,32 +71,37 @@
 <body>
   
   <div class="dashboard-content">
-    <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+        <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
 
-        <!-- Waffle menu container -->
-    <div id="waffle-container" class="hidden"></div>
+            <!-- Waffle menu container -->
+        <div id="waffle-container" class="hidden"></div>
+            
+        <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
+
+        <h1> Inventory Reports</h1>
+
+        <div class="toolbar">
+            <button id="btnClear" class="hidden" onclick="clearFilters()">  Clear All Filters  </button>
+        </div>
         
-    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
 
-    <h1> Inventory Reports</h1>
+        <!-- will serve as the container for the Qlik charts -->
+        <div class="inv-container" id="inv-container"></div>
 
-    <div class="toolbar">
-        <button id="btnClear" class="hidden" onclick="clearFilters()">  Clear All Filters  </button>
-    </div>
-    
-
-    <!-- will serve as the container for the Qlik charts -->
-    <div class="inv-container" id="inv-container"></div>
-
-    <div class="nav-arrows">
+        <div class="nav-arrows">
             <div id="backArrow" class="nav-arrow nav-arrow-back"> 
                 <span class="nav-icon">❮</span> 
                 <span class="nav-label">Jumbotron</span>
             </div>
+
+            <div id="nextArrow" class="nav-arrow nav-arrow-next">
+                <span class="nav-label">Referral Summary</span> 
+                <span class="nav-icon">❯</span>
+            </div>
+        </div>
+
+
     </div>
-
-
-</div>
 
 
 
@@ -107,6 +112,7 @@
     const container = document.getElementById("inv-container");
     const btnClear = document.getElementById("btnClear");
     const backArrow = document.getElementById("backArrow");
+    const nextArrow = document.getElementById("nextArrow");
 
     // to allow for updating the chart on the first selection of a filter, we need to track whether the chart has been reloaded yet
     let chartReloaded = false;
@@ -135,6 +141,8 @@
                 backArrow.classList.add("ready");
 
                 backArrow.onclick = () => { window.location.href = "execOverview.html"; };
+                nextArrow.classList.add("ready");
+                nextArrow.onclick = () => { window.location.href = "refExecSummary.html"; };
 
                 document.querySelector(".waffle-button").classList.remove("hidden");
                 document.getElementById("waffle-container").classList.remove("hidden");
@@ -234,13 +242,23 @@
     renderDashboard();
     
     //  Clear filters and re-render the chart with a new identity
-    function clearFilters() {
-        btnClear.classList.add("hidden");
+    async function clearFilters() {
+        try {
+            const filterEmbed = document.querySelector(".filter-row-wrapper qlik-embed");
 
-        setTimeout(() => {
-        container.innerHTML = "";   // clear everything
-        renderDashboard();          // re-render fresh session
-        }, 150);
+            if (filterEmbed) {
+                const refApi = await filterEmbed.getRefApi();
+                const app = await refApi.getDoc();
+
+                await app.clearAll();
+                console.log("All filters cleared");
+            }
+
+            chartReloaded = false;
+
+        } catch (err) {
+            console.error("Failed to clear filters:", err);
+        }
     }
 
   </script>

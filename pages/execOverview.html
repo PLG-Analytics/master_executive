@@ -1,220 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Qlik Web Components library -->
-  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
-  <link rel="stylesheet" href="/css/styles.css">
-  <script src="/js/utils.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/utils.js"></script>
   
-  <style>
-    .overview-container {
-        width: 100%; 
-        position: relative;
-    }
+    <style>
+        .overview-container {
+            width: 100%; 
+            position: relative;
+        }
 
-    /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
-    .kpi-row {
-        display: flex;
-        gap: 15px;
-    }
+        /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
+        .kpi-row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        /* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
+        .kpi-wrapper {
+            flex: 1 1 0;
+            min-width: 0;       
+            height: 150px;
+        }
+
+        /* Ensuring that the Qlik embed component within the KPI wrapper takes up the full space of its parent */
+        .kpi-wrapper qlik-embed {
+            width: 100%;
+            height: 100%;       
+        }
+
+        .jumbotron-wrapper {
+            width: 100%;
+            height: 450px; 
+            margin-bottom: 15px;
+            margin-top: 15px;
+        }
+
+        .jumbotron-wrapper qlik-embed {
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Adjusting font size and padding for pivot charts to improve readability */
+        .jumbotron-wrapper [data-section-id="GRID"] * {
+            font-size: 15.5px !important;
+        }
+        
+        /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+        .jumbotron-wrapper .fullscreen-btn {
+            top: 175px !important;
+            right: 10px !important;
+        }
+
+        /* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+        .jumbotron-wrapper.browser-fullscreen .fullscreen-btn {
+            top: 20px !important;
+            right: 20px !important;
+        }
+
+        /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
+        .funnel-row {
+            display: flex;
+            gap: 15px;
+            height: 400px;
+            margin-bottom: 15px; 
+            margin-top: 15px;
+        }
+        
+        /* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
+        .pivot-wrapper {  
+            flex: 1;
+            min-width: 0;       
+            height: 100%;   
+            display: flex;      
+            overflow: hidden;
+            border: none;
+            position: relative;
+        }
     
-    /* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
-    .kpi-wrapper {
-        flex: 1 1 0;
-        min-width: 0;       
-        height: 150px;
-        border: 1px solid #d3d3d3;
-        box-shadow: 0 2px 6px rgba(0,0,0,.10);
-        background: #fff;
-    }
-
-    /* Ensuring that the Qlik embed component within the KPI wrapper takes up the full space of its parent */
-    .kpi-wrapper qlik-embed {
-        width: 100%;
-        height: 100%;       
-    }
-
-    .njs-cell-footer {
-        background-color: transparent !important;
-        font-style: italic !important;
-    }
-
-    .jumbotron-wrapper {
-        width: 100%;
-        height: 450px; 
-        margin-bottom: 15px;
-        margin-top: 15px;
-        box-shadow: 0 2px 6px rgba(0,0,0,.10);
-    }
-
-    .jumbotron-wrapper qlik-embed {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* Adjusting font size and padding for pivot charts to improve readability */
-    .jumbotron-wrapper [data-section-id="GRID"] * {
-        font-size: 15.5px !important;
-    }
+        /* Adding a light border and shadow to replicate Qlik*/
+        .pivot-wrapper.ready,
+        .jumbotron-wrapper,
+        .kpi-wrapper {
+            border: 1px solid #d3d3d3;
+            box-shadow: 0 3px 7px rgba(0,0,0,.10);
+            background: #fff;
     
-    /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
-    .jumbotron-wrapper .fullscreen-btn {
-        top: 175px !important;
-        right: 10px !important;
-    }
+        }
 
-    /* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
-    .jumbotron-wrapper.browser-fullscreen .fullscreen-btn {
-        top: 20px !important;
-        right: 20px !important;
-    }
+        .pivot-wrapper qlik-embed  {
+            width: 100%;
+            height: 100%;
+        }
 
-    /* Styling the KPI row to display KPIs in a horizontal layout with spacing */
-    .funnel-row {
-        display: flex;
-        gap: 15px;
-        height: 400px;
-        margin-bottom: 15px; 
-        margin-top: 15px;
-    }
-    
-    /* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
-    .pivot-wrapper {  
-        flex: 1;
-        min-width: 0;       
-        height: 100%;   
-        display: flex;      
-        overflow: hidden;
-        border: none;
-        position: relative;
-    }
-  
-    .pivot-wrapper.ready {
-        border: 1px solid #d3d3d3;
-        box-shadow: 0 2px 6px rgba(0,0,0,.10);
-        background: #fff;
- 
-    }
+        /* Full screen button styling  - used by funnel analytics*/
+        .fullscreen-btn {
+            position: absolute;
+            top: 2%;
+            right: 1.2%;
+            z-index: 1000;
 
-    .pivot-wrapper qlik-embed  {
-        width: 100%;
-        height: 100%;
-    }
+            background: transparent;
+            border: none;
+            padding: 0;
 
-    /* Full screen button styling  - used by funnel analytics*/
-    .fullscreen-btn {
-        position: absolute;
-        top: 2%;
-        right: 1.2%;
-        z-index: 1000;
+            cursor: pointer;
 
-        background: transparent;
-        border: none;
-        padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        cursor: pointer;
+        .fullscreen-btn img {
+            width: 25px;
+            height: 25px;
+        }
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
+        .pivot-wrapper.browser-fullscreen,
+        .jumbotron-wrapper.browser-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: white;
+            padding: 1.5%;
+            box-sizing: border-box;
+            border: none !important;
+        }
+        
+        /* Adjusting font size and padding for pivot charts to improve readability */
+        .pivot-wrapper [data-section-id="GRID"] * {
+            font-size: 15.5px !important;
+        }
 
-    .fullscreen-btn img {
-        width: 25px;
-        height: 25px;
-    }
+        
+        #btnDataContext {
+            background-color: #0097ce;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-bottom: 5px;
+        }
 
-    .pivot-wrapper.browser-fullscreen,
-    .jumbotron-wrapper.browser-fullscreen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100vw;
-        height: 100vh;
-        z-index: 9999;
-        background: white;
-        padding: 1.5%;
-        box-sizing: border-box;
-        border: none !important;
-    }
-    
-    /* Adjusting font size and padding for pivot charts to improve readability */
-    .pivot-wrapper [data-section-id="GRID"] * {
-        font-size: 15.5px !important;
-    }
+        /* Data Context Popup */
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .modal.hidden {
+            display: none;
+        }
+
+        .modal-context {       
+            background: white;
+            width: 700px;
+            max-width: 90%;
+            padding: 30px 35px;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .data-context-list {
+            margin-top: 20px;
+            padding-left: 24px;
+        }
+        
+        .data-context-list li {
+            margin-bottom: 16px;
+            line-height: 1.5;
+            font-size: 16px;
+        }
+
+        .data-context-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+    </style>
 
     
-    #btnDataContext {
-        background-color: #0097ce;
-        color: white;
-        border: none;
-        padding: 8px 14px;
-        border-radius: 6px;
-        cursor: pointer;
-        margin-bottom: 5px;
-    }
-
-    /* Data Context Popup */
-    .modal {
-        position: fixed;
-        inset: 0;
-        background: rgba(0,0,0,0.5);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-    }
-
-    .modal.hidden {
-        display: none;
-    }
-
-    .modal-context {       
-        background: white;
-        width: 700px;
-        max-width: 90%;
-        padding: 30px 35px;
-        border-radius: 8px;
-        position: relative;
-    }
-
-    .data-context-list {
-        margin-top: 20px;
-        padding-left: 24px;
-    }
-    
-    .data-context-list li {
-        margin-bottom: 16px;
-        line-height: 1.5;
-        font-size: 16px;
-    }
-
-    .data-context-list li:last-child {
-        margin-bottom: 0;
-    }
-
-    .close-modal {
-        position: absolute;
-        top: 10px;
-        right: 15px;
-        font-size: 24px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    
-  </style>
-
-  
-  <script
-    data-host="https://pondlehocky.us.qlikcloud.com"
-    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
-    data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
-    data-auth-type="Oauth2"
-    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
-  </script>
+    <script
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
+    </script>
 
 </head>
 
@@ -229,7 +223,6 @@
             <p><strong>Litify Go-Live:</strong> Washington and NJ WC were onboarded in June 2026.</p>
             <p><strong>HC</strong> Headcount is updated monthly.</p>
             <p><strong>Washington WC:</strong> Includes deduplicated matters migrated from DearLegal.</p>
-            <p><strong>NJ WC:</strong> Case statuses are not actively maintained in Litify as of July 14, 2026.</p>
         </div>
     </div>
 </div>

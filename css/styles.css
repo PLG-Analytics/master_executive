@@ -187,3 +187,9 @@ qlik-embed {
   height: 100%;
   margin-top: 10px;
 }
+
+/* Styling the footer of the cells in the dashboard */
+.njs-cell-footer {
+    background-color: transparent !important;
+     font-style: italic !important;
+}
