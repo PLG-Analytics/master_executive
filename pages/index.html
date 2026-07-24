@@ -9,8 +9,7 @@
 </head>
 
 
-<style>
-    
+<style> 
     .index-nav-container {
         width: 100%;
         margin-top: auto;
@@ -20,6 +19,7 @@
         justify-content: flex-end;
     }
 
+    /* Formatting the arrow - specific for index*/
     .index-nav-arrow {
         bottom: 20px;
         right: 20px;
@@ -42,14 +42,16 @@
         color: #1f4f82;
     }
 
+    /* Formatting table that has overview of the reports*/
     .report-contents {
         width: 100%;
         max-width: 1550px;
         border-collapse: collapse;
         margin-top: 20px;
-        border: 2px solid #12284c;   /* outer border */
+        border: 2px solid #12284c; 
     }
 
+    /* Formatting table header*/
     .report-contents th {
         background-color: #12284c;
         color: white;
@@ -58,6 +60,7 @@
         border: 1px solid #12284c;
     }
 
+    /* Formatting table cells*/
     .report-contents td {
         padding: 12px;
         border: 1px solid #12284c;
@@ -65,10 +68,12 @@
         line-height: 1.6;
     }
 
+    /* Adding light zebra row colors*/
     .report-contents tr:nth-child(even) {
         background-color: #f8f9fb;
     }
 
+    /* Adding hover color on the row*/
     .report-contents tbody tr {
         transition: background-color 0.2s ease;
     }
@@ -81,16 +86,101 @@
         border-left: 4px solid #2d6fb7;
     }
 
+    /* Formatting the link directing to the report page*/
     .report-link {
         color: #2d6fb7;
         text-decoration: none;
         font-weight: 600;
     }
 
+    /* Formatting the link directing to the report page - adding an underline when hovering*/
     .report-link:hover {
         color: #1f4f82;
         text-decoration: underline;
     }
+
+    /* Report Overview content for a smaller screen */
+    .mobile-report-cards {
+        display: none;
+    }
+
+    /* Styling the card layout*/
+    .info-card-toggle {
+        margin: 20px 0;
+        border: 1px solid #d3d3d3;
+        border-left: 5px solid #12284c;
+        border-radius: 6px;
+        background: #fff;
+        box-shadow: 0 3px 7px rgba(0,0,0,.10);
+        overflow: hidden;
+    }
+
+    .info-card-toggle summary { /*Styling the text in the tab*/
+        padding: 14px 22px;
+        font-size: 1.2rem;  
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+        position: relative;
+    }
+
+
+    .info-card-toggle summary::-webkit-details-marker {
+        display: none;
+    }
+
+    .info-card-toggle summary::after {
+        content: "▼";
+        position: absolute;
+        right: 20px;
+        transition: transform 0.2s ease;
+    }
+
+    .info-card-toggle[open] summary::after {
+        transform: rotate(180deg);
+    }
+
+    .info-card-content {
+        padding: 0 22px 22px;
+    }
+
+    .info-card-content p {
+        line-height: 1.6;
+        margin: 12px 0;
+    }
+
+  /* Responsive adjustments for different screen sizes */
+    @media (max-width: 768px) {
+        .report-contents { /* hide report content table*/
+            display: none;
+        }
+
+        .mobile-report-cards {  /*show the responsive table*/
+            display: block;
+        }
+
+        .report-card { /*format reponsive content*/
+            background: #fff;
+            border: 1px solid #d3d3d3;
+            border-left: 5px solid #12284c;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 7px rgba(0,0,0,.10);
+        }
+
+        .report-card h3 { /*format reponsive content headers*/
+            margin: 0 0 12px 0;
+            font-size: 1.1rem;
+        }
+
+        .report-card p {  /*format reponsive content text*/
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+    }
+
+
 </style>
 
 
@@ -98,120 +188,173 @@
   <div class="page-content">
     <!-- Waffle button -->
     <div class="waffle-button" onclick="toggleWaffle()">☰</div>
-
-    <!-- Waffle menu container -->
     <div id="waffle-container"></div>
 
-  
-    <div id="divLogo">
-        <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">
-    </div>
+    <div id="divLogo">   <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">   </div>
 
     <h1>Master Executive Report</h1>
 
     <br>
-    
-    <h2>Report Information</h2>
 
-    <p><strong>Refresh Schedule:</strong> Daily at approximately 1:00 AM EST</p>
-
-    <p><strong>Data Sources:</strong> Litify, Case Xchange</p>
-
-    <p><strong>Reporting Methodology:</strong> Inventory and performance metrics are based on the firm's stage-based reporting framework implemented in June 2026.</p>
-
-    <p><strong>Support Contacts:</strong> Megha Patel (mpatel@pondlehocky.com) and Kevin Doyle (kdoyle@pondlehocky.com)</p>
-
-    <br>
-
-
-    <h2>Usage Notes</h2>
-
-    <p>
-        <strong>Filtering:</strong> Columns displaying the ☰ menu support filtering and selections.
-    </p>
-
-    <p>
-        <strong>Finding Values:</strong> Open the ☰ menu and use Search to quickly locate specific values.
-    </p>
-
-    <p>
-        <strong>Filter Selections:</strong> Selections do not carry between pages. Each page maintains its own filters. Similarly, <i>Clear All Filters</i> only applies to the current page.
-    </p>
-
-    <br>
-
-    <h2>Report Contents</h2>
-
+    <h2>Reports Overview</h2>
+    <!-- Larger screen table -->
     <table class="report-contents">
-        <thead>
-            <tr>
-                <th> Page </th>
-                <th> Description </th>
-                <th> Departments </th>
-                <th> Refresh </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>  <a href="execOverview.html" class="report-link">Executive Overview</a></strong></td>
-                <td>
-                    Monthly performance reporting, funnel analytics, current inventory,
-                    month-over-month changes, and month-to-date trends.
-                </td>
-                <td>
-                    PA WC<br>
-                    SSD<br>
-                    Referral<br>
-                    Washington WC<br>
-                    NJ WC, NJ Gig Worker, NJ PI, NJ ELG - Other
-                </td>
-                <td>
-                    Daily
-                </td>
-            </tr>
-            <tr>
-                <td><strong>  <a href="inv.html" class="report-link">Inventory</a></strong></td>
-                <td>
-                    Firm-wide inventory reporting including FOH and BOH inventory,
-                    headcount metrics, workload distribution, and inventory trends.
-                </td>
-                <td>
-                    PA WC<br>
-                    SSD<br>
-                    Referral<br>
-                    Washington WC<br>
-                    NJ EMP <br>
-                    Pre-Litigation
-                </td>
-                <td>
-                    Global Inventory: <i>Daily</i>   <br><br>
-                    Tally MoM: <i>Daily</i><br>
-                </td>
-            </tr>
-            
-            <tr>
-                <td><strong>  <a href="refExecSummary.html" class="report-link">Referral Executive Summary</a></strong></td>
-                <td>
-                    Executive referral performance dashboard tracking referrals created, signed, pending, under review, and cancelled, with prior-day and month-to-date trends and activity.
-                </td>
-                <td>
-                    Referral
-                </td>
-                <td>
-                    Daily
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th> Page </th>
+                    <th> Description </th>
+                    <th> Departments </th>
+                    <th> Refresh </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>  <a href="execOverview.html" class="report-link">Jumbotron </a></strong></td>
+                    <td>
+                        Monthly performance reporting, funnel analytics, current inventory,
+                        month-over-month changes, and month-to-date trends.
+                    </td>
+                    <td>
+                        PA WC<br>
+                        SSD<br>
+                        Referral<br>
+                        Washington WC<br>
+                        NJ WC, NJ Gig Worker, NJ PI, NJ ELG - Other
+                    </td>
+                    <td>
+                        Daily
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>  <a href="inv.html" class="report-link">Global Inventory</a></strong></td>
+                    <td>
+                        Firm-wide inventory reporting including FOH and BOH inventory,
+                        headcount metrics, workload distribution, and inventory trends.
+                    </td>
+                    <td>
+                        PA WC<br>
+                        SSD<br>
+                        Referral<br>
+                        Washington WC<br>
+                        NJ EMP <br>
+                        Pre-Litigation
+                    </td>
+                    <td>
+                        Global Inventory: <i>Daily</i>   <br>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td><strong>  <a href="refExecSummary.html" class="report-link">Referral Executive Summary</a></strong></td>
+                    <td>
+                        Executive referral performance dashboard tracking referrals created, signed, pending, under review, and cancelled, with prior-day and month-to-date trends and activity.
+                    </td>
+                    <td>
+                        Referral
+                    </td>
+                    <td>
+                        Daily
+                    </td>
+                </tr>
 
-        
-        </tbody>
+            
+            </tbody>
     </table>
 
+     <!-- Responsive table  -->
+    <div class="mobile-report-cards">
+        <div class="report-card">
+            <h3>
+                <a href="execOverview.html" class="report-link"> Jumbotron  </a>
+            </h3>
+
+            <p>
+                Monthly performance reporting, funnel analytics, current inventory,
+                month-over-month changes, and month-to-date trends.
+            </p>
+
+            <p>
+                <strong>Departments:</strong><br>
+                PA WC, SSD, Referral, Washington WC,
+                NJ WC, NJ Gig Worker, NJ PI, NJ ELG - Other
+            </p>
+
+        </div>
+
+        <div class="report-card">
+            <h3>
+                <a href="inv.html" class="report-link">   Global Inventory  </a>
+            </h3>
+
+            <p>
+                Firm-wide inventory reporting including FOH and BOH inventory,
+                headcount metrics, workload distribution, and inventory trends.
+            </p>
+
+            <p>
+                <strong>Departments:</strong><br>
+                PA WC, SSD, Referral, Washington WC, NJ EMP, Pre-Litigation
+            </p>
+        </div>
+
+        <div class="report-card">
+            <h3>
+                <a href="refExecSummary.html" class="report-link">  Referral Executive Summary </a>
+            </h3>
+
+            <p>
+                Executive referral performance dashboard tracking referrals created,
+                signed, pending, under review, and cancelled, with prior-day and
+                month-to-date trends and activity.
+            </p>
+
+            <p><strong>Departments:</strong> Referral</p>
+        </div>
+
+    </div>
+
+
     <br>
+
+    <h2>Report Guide</h2>
+    <!--  Chart Filters  -->
+    <details class="info-card-toggle">
+        <summary>Chart Filters</summary>
+
+        <div class="info-card-content">
+            <p><strong>Filtering:</strong> Columns displaying the ☰ menu support filtering and selections.</p>
+            <p><strong>Finding Values:</strong> Open the ☰ menu and use Search to quickly locate specific values.</p>
+            <p><strong>Filter Selections:</strong> Selections do not carry between pages. Each page maintains its own filters. Similarly, <i>Clear All Filters</i> only applies to the current page.</p>
+        </div>
+    </details>
+
+    <!--  Methodology  -->
+    <details class="info-card-toggle">
+        <summary>Methodology</summary>
+
+        <div class="info-card-content">
+            <p><strong>Refresh Schedule:</strong> Daily at approximately 1:00 AM EST</p>
+            <p><strong>Data Sources:</strong> Litify, DearLegal, Case Xchange</p>
+            <p><strong>Reporting Methodology:</strong> Inventory and performance metrics are based on the firm's stage-based reporting framework implemented in June 2026.</p>
+
+        </div>
+    </details>
+
+    <!--  Contact info -->
+    <details class="info-card-toggle">
+        <summary>Analytics Contacts</summary>
+
+        <div class="info-card-content">
+            <p> Megha Patel:  <a href="mailto:mpatel@pondlehocky.com">mpatel@pondlehocky.com</a> </p> 
+            <p>Kevin Doyle:   <a href="mailto:kdoyle@pondlehocky.com">kdoyle@pondlehocky.com</a>  </p>
+        </div>
+    </details>
+
     
     
     <div class="index-nav-container">
         <div id="indexNextArrow" class="index-nav-arrow">
-            <span class="nav-label">Executive Overview</span>
+            <span class="nav-label">Jumbotron</span>
             <span class="nav-icon">❯</span>
         </div>
     </div>

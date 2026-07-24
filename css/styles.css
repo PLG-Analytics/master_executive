@@ -108,6 +108,8 @@ qlik-embed {
     right: 20px;
 }
 
+
+
 /* Styling the waffle button-like image */
 .waffle-button {
     font-size: 24px;
@@ -192,4 +194,50 @@ qlik-embed {
 .njs-cell-footer {
     background-color: transparent !important;
      font-style: italic !important;
+}
+
+
+/* Full screen button styling */
+.fullscreen-btn {
+    position: absolute;
+    top: 2%;
+    right: 1.2%;
+    z-index: 1000;
+
+    background: transparent;
+    border: none;
+    padding: 0;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.fullscreen-btn img {
+    width: 25px;
+    height: 25px;
+}
+
+@media (max-width: 768px) {
+    .nav-label {
+        display: none;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    #btnClear {
+        width: 100%;
+        max-width: 250px;
+    }
+
+
+    #imgLogo {
+        max-width: 150px;
+        height: auto;
+    }    
 }

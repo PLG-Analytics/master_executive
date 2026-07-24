@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- Qlik Web Components library -->
+    <!-- Qlik Web Components library -->
     <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+
+    <!-- Custom styles and scripts -->
     <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/utils.js"></script>
+
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
     <style>
         .overview-container {
@@ -39,6 +43,7 @@
             height: 450px; 
             margin-bottom: 15px;
             margin-top: 15px;
+            position: relative;
         }
 
         .jumbotron-wrapper qlik-embed {
@@ -53,7 +58,6 @@
         
         /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
         .jumbotron-wrapper .fullscreen-btn {
-            top: 175px !important;
             right: 10px !important;
         }
 
@@ -98,28 +102,6 @@
             height: 100%;
         }
 
-        /* Full screen button styling  - used by funnel analytics*/
-        .fullscreen-btn {
-            position: absolute;
-            top: 2%;
-            right: 1.2%;
-            z-index: 1000;
-
-            background: transparent;
-            border: none;
-            padding: 0;
-
-            cursor: pointer;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .fullscreen-btn img {
-            width: 25px;
-            height: 25px;
-        }
 
         .pivot-wrapper.browser-fullscreen,
         .jumbotron-wrapper.browser-fullscreen {
@@ -198,6 +180,66 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* Responsive adjustments for different screen sizes */
+        /* Tablet */
+        @media (max-width: 1024px) {
+            .kpi-row {
+                flex-wrap: wrap;
+            }
+
+            .kpi-wrapper {
+                flex: 1 1 calc(33.33% - 10px);
+                min-width: 300px;
+            }
+
+            .funnel-row {
+                flex-direction: column;
+                height: auto;
+            }
+
+            .pivot-wrapper {
+                height: 700px;
+            }
+
+            .jumbotron-wrapper {
+                height: 450px;
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .dashboard-content {
+                padding: 10px;
+            }
+
+            .kpi-row {
+                flex-direction: column;
+            }
+
+            .kpi-wrapper {
+                width: 100%;
+                height: 250px;
+            }
+
+            .jumbotron-wrapper {
+                height: 450px;
+            }
+
+            .funnel-row {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .pivot-wrapper {
+                height: 500px;
+            }       
+
+            .modal-context {
+                width: 95%;
+                padding: 20px;
+            }
+        }
         
     </style>
 
@@ -231,12 +273,10 @@
 <body> 
     <div class="dashboard-content">
         <!-- Waffle button -->
-        <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+        <div class="waffle-button" onclick="toggleWaffle()">☰</div>
+        <div id="waffle-container"></div>
 
-        <!-- Waffle menu container -->
-        <div id="waffle-container" class="hidden"></div>
-
-        <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>  
+        <div id="divLogo">   <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">   </div>
 
         <h1> Jumbotron </h1>
 
@@ -257,7 +297,7 @@
             </div>
 
             <div id="nextArrow" class="nav-arrow nav-arrow-next">
-                <span class="nav-label">Inventory Reports</span> 
+                <span class="nav-label">Global Inventory</span> 
                 <span class="nav-icon">❯</span>
             </div>
         </div>
@@ -338,27 +378,26 @@
         kpiRow.classList.add("kpi-row");
 
         // add the KPIs to the row
-        kpiRow.appendChild(wrapper(kpiActiveInv, "kpi-wrapper"));
-        kpiRow.appendChild(wrapper(kpiMoMInv, "kpi-wrapper"));
-        kpiRow.appendChild(wrapper(kpiAttyHc, "kpi-wrapper"));
-        kpiRow.appendChild(wrapper(kpiAttyInv, "kpi-wrapper"));
-        kpiRow.appendChild(wrapper(kpiStaffHc, "kpi-wrapper"));
-        kpiRow.appendChild(wrapper(kpiStaffInv, "kpi-wrapper"));
+        kpiRow.appendChild(wrapper(kpiActiveInv, "kpi-wrapper",0));
+        kpiRow.appendChild(wrapper(kpiMoMInv, "kpi-wrapper",0));
+        kpiRow.appendChild(wrapper(kpiAttyHc, "kpi-wrapper",0));
+        kpiRow.appendChild(wrapper(kpiAttyInv, "kpi-wrapper",0));
+        kpiRow.appendChild(wrapper(kpiStaffHc, "kpi-wrapper",0));
+        kpiRow.appendChild(wrapper(kpiStaffInv, "kpi-wrapper",0));
 
         container.appendChild(kpiRow);
 
         // add the main jumbotron chart (performance month)
         let newJumbotron = createChart(sessionId, appId, "NnrNa");
-        container.appendChild(wrapper(newJumbotron, "jumbotron-wrapper"));
+        container.appendChild(wrapper(newJumbotron, "jumbotron-wrapper",1));
 
         // keep reference updated
         chrtJumbotron = newJumbotron;
 
         // Load in Funnel Analytics
         let funnelBreak = createChart(sessionId, appId, "d2ddb708-6b50-421a-a8ea-7e9ba1dca43b"); 
-        container.appendChild(wrapper(funnelBreak, "break-wrapper"));
+        container.appendChild(wrapper(funnelBreak, "break-wrapper",0));
 
-        
         const funnelSection = document.createElement("div");
         funnelSection.classList.add("funnel-section");
 
@@ -366,15 +405,15 @@
         funnelRow1.classList.add("funnel-row");
         let pivotFunnelWC = createChart(sessionId, appId, "367e6ff1-36bb-4991-8def-bb09be548ca6"); 
         let pivotFunnelSSD = createChart(sessionId, appId, "e911d87e-c55b-4c73-a692-42cab430555f"); 
-        funnelRow1.appendChild(wrapper(pivotFunnelWC, "pivot-wrapper"));
-        funnelRow1.appendChild(wrapper(pivotFunnelSSD, "pivot-wrapper"));
+        funnelRow1.appendChild(wrapper(pivotFunnelWC, "pivot-wrapper",1));
+        funnelRow1.appendChild(wrapper(pivotFunnelSSD, "pivot-wrapper",1));
 
         const funnelRow2 = document.createElement("div");
         funnelRow2.classList.add("funnel-row");
         let pivotFunnelRef = createChart(sessionId, appId, "37eb0fec-9c0a-487e-8f93-80a0cfe912f4"); 
         let pivotFunnelNJ = createChart(sessionId, appId, "cabae542-2c25-462a-b8d1-ff7824f1784e"); 
-        funnelRow2.appendChild(wrapper(pivotFunnelRef, "pivot-wrapper"));
-        funnelRow2.appendChild(wrapper(pivotFunnelNJ, "pivot-wrapper"));
+        funnelRow2.appendChild(wrapper(pivotFunnelRef, "pivot-wrapper",1));
+        funnelRow2.appendChild(wrapper(pivotFunnelNJ, "pivot-wrapper",1));
 
         funnelSection.appendChild(funnelRow1);
         funnelSection.appendChild(funnelRow2);

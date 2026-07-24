@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
-  <!-- Qlik Web Components library -->
-  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
-  <link rel="stylesheet" href="/css/styles.css">
-  <script src="/js/utils.js"></script>
+    <!-- Qlik Web Components library -->
+    <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+
+    <!-- Custom styles and scripts -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/utils.js"></script>
+
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <script
     data-host="https://pondlehocky.us.qlikcloud.com"
@@ -42,6 +46,7 @@
         border: 1px solid #d3d3d3;
         box-shadow: 0 3px 7px rgba(0,0,0,.10);
         background: #fff;
+        position: relative;
     }
 
     .inv-charts-wrapper qlik-embed {
@@ -57,12 +62,71 @@
         align-items: flex-start;
     }
 
-
      /* Adjusting font size and padding for pivot charts to improve readability */
     .inv-charts-wrapper [data-section-id="GRID"] * {
         font-size: 15.5px !important;
     }
 
+     /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+    .inv-charts-wrapper .fullscreen-btn {
+        right: 10px !important;
+    }
+
+    /* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+    .inv-charts-wrapper .browser-fullscreen .fullscreen-btn {
+        top: 20px !important;
+        right: 20px !important;
+    }
+
+    .inv-charts-wrapper.browser-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: white;
+            padding: 1.5%;
+            box-sizing: border-box;
+            border: none !important;
+        }
+
+    /* Responsive adjustments for different screen sizes */
+    /* Tablet */
+    @media (max-width: 1024px) {
+        .content-row {
+            flex-direction: column;
+        }
+
+        .filter-row-wrapper {
+            width: 100%;
+            height: 300px;
+        }
+
+        .inv-charts-wrapper {
+            width: 100%;
+            height: 600px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .filter-row-wrapper {
+            width: 100%;
+            height: 250px;
+        }
+
+        .inv-charts-wrapper {
+            width: 100%;
+            height: 500px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+        }
+
+    }
 
     </style>
 
@@ -71,14 +135,13 @@
 <body>
   
   <div class="dashboard-content">
-        <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+        <!-- Waffle button -->
+        <div class="waffle-button" onclick="toggleWaffle()">☰</div>
+        <div id="waffle-container"></div>
 
-            <!-- Waffle menu container -->
-        <div id="waffle-container" class="hidden"></div>
-            
-        <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div> 
+        <div id="divLogo">   <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">   </div>
 
-        <h1> Inventory Reports</h1>
+        <h1> Global Inventory</h1>
 
         <div class="toolbar">
             <button id="btnClear" class="hidden" onclick="clearFilters()">  Clear All Filters  </button>
@@ -147,7 +210,7 @@
                 document.querySelector(".waffle-button").classList.remove("hidden");
                 document.getElementById("waffle-container").classList.remove("hidden");
 
-                document.querySelectorAll(".filter-row-wrapper, .inv-charts-wrapper").forEach(el => {
+                document.querySelectorAll(".filter-row-wrapper, .inv-charts-wrapper, .fullscreen-btn").forEach(el => {
                     el.classList.remove("hidden");
                     el.classList.add("ready");
             });
@@ -180,7 +243,7 @@
         currentContentRow = document.createElement("div");
         currentContentRow.classList.add("content-row");
         // filter
-        const filterWrapper = wrapper(deptFilter, "filter-row-wrapper");
+        const filterWrapper = wrapper(deptFilter, "filter-row-wrapper",0);
 
         // Add a click event listener to the filter wrapper to reload the chart when a filter is selected
         filterWrapper.addEventListener(
@@ -201,7 +264,7 @@
 
         // chart 
         let globalInv = createChart(currentSessionId, currentAppId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
-        currentContentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper"));
+        currentContentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper",1));
 
         container.appendChild(currentContentRow);
             
@@ -226,16 +289,16 @@
             "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6"
         );
 
-        const newWrapper = wrapper(newChart, "inv-charts-wrapper");
+        const newWrapper = wrapper(newChart, "inv-charts-wrapper",1);
         newWrapper.classList.remove("hidden");
         
         parent.appendChild(newWrapper);
 
         waitForQlikAuth();
         document.querySelectorAll('.sn-copy-cell[title]')
-    .forEach(cell => {
-        console.log(cell.title, cell.style.width);
-    });
+            .forEach(cell => {
+                console.log(cell.title, cell.style.width);
+            });
         console.log("Chart regenerated");
     }
 

@@ -2,12 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Qlik Web Components library -->
     <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+
+    <!-- Custom styles and scripts -->
     <link rel="stylesheet" href="/css/styles.css">
     <script src="/js/utils.js"></script>
+
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <style>
       .ref-container {
@@ -15,6 +19,7 @@
         position: relative;
       }
 
+      /* KPI row - setting widths to replicate Qlik format */
       .kpi-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -22,22 +27,26 @@
         margin-bottom: 15px;
       }
 
+      /* KPI unit - representing half of the full row */
       .kpi-unit {
           min-width: 0;
       }
 
+      /* Styling for when the unit is divided into quarters */
       .kpi-unit-quarters {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 8px;
       }
 
+      /* Styling for when the unit is divided into halves */
       .kpi-unit-halves {
           display: grid;
           grid-template-columns: repeat(2, 1fr);
           gap: 8px;
       }
 
+      /* Ensuring each component of a unit is styled the same way */
       .kpi-full-row,
       .kpi-half-row,
       .kpi-quarter-row {
@@ -51,6 +60,7 @@
           min-width: 0;
       }
 
+      /* Ensuring each qlik component of a unit is styled the same way */
       .kpi-full-row qlik-embed,
       .kpi-half-row qlik-embed,
       .kpi-quarter-row qlik-embed {
@@ -59,12 +69,45 @@
           display: block;
       }
 
+      /* Styling the last row to be a bit longer than the rest */
       .kpi-row-last {
           height: 275px;
       }
 
+      /* Styling for the Saltz chart to take up the full height of its container */
       .tb-saltz {
           height: 100%;
+      }
+
+      /* Responsive adjustments for different screen sizes */
+      /* Tablet */
+      @media (max-width: 1024px) {
+        .kpi-row {
+          grid-template-columns: 1fr;
+        }
+
+        .kpi-unit-quarters {
+          grid-template-columns: repeat(2, 1fr);
+        }
+      }
+
+      /* Mobile */
+      @media (max-width: 768px) {
+        .kpi-unit-quarters,
+        .kpi-unit-halves {
+          grid-template-columns: 1fr;
+        }
+
+        .kpi-full-row,
+        .kpi-half-row,
+        .kpi-quarter-row {
+          height: 180px;
+          min-height: 180px;
+        }
+
+        .kpi-row-last {
+          height: auto;
+        }
       }
     </style>
 
@@ -95,7 +138,7 @@
     <div class="nav-arrows">
       <div id="backArrow" class="nav-arrow nav-arrow-back"> 
         <span class="nav-icon">❮</span> 
-          <span class="nav-label">Inventory Reports</span> 
+          <span class="nav-label">Global Inventory</span> 
       </div>
     </div>
 
@@ -155,7 +198,6 @@
 
     //  render the dashboard with the appropriate Qlik charts for this page
     function renderDashboard() {
-
       // Row 1: Created yesterday; Sent this month
       const kpiRow1 = document.createElement("div");
       kpiRow1.classList.add("kpi-row");
@@ -164,13 +206,13 @@
       row1Unit1.classList.add("kpi-unit");
 
       let refCreatedYest = createChart(sessionId, appId, "HxzrgR");
-      row1Unit1.appendChild(wrapper(refCreatedYest, "kpi-full-row"));
+      row1Unit1.appendChild(wrapper(refCreatedYest, "kpi-full-row",0));
 
       const row1Unit2 = document.createElement("div");
       row1Unit2.classList.add("kpi-unit");
 
       let refSentThisMonth = createChart(sessionId, appId, "KpwJBx");
-      row1Unit2.appendChild(wrapper(refSentThisMonth, "kpi-full-row"));
+      row1Unit2.appendChild(wrapper(refSentThisMonth, "kpi-full-row",0));
 
       kpiRow1.appendChild(row1Unit1);
       kpiRow1.appendChild(row1Unit2);
@@ -184,22 +226,22 @@
       row2Unit1.classList.add("kpi-unit");
 
       let refCreatedYestUR = createChart(sessionId, appId, "Eube");
-      row2Unit1.appendChild(wrapper(refCreatedYestUR, "kpi-full-row"));
+      row2Unit1.appendChild(wrapper(refCreatedYestUR, "kpi-full-row",0));
 
       const row2Unit2 = document.createElement("div");
       row2Unit2.classList.add("kpi-unit-quarters");
 
       let refFinchSigned = createChart(sessionId, appId, "EJpJW");
-      row2Unit2.appendChild(wrapper(refFinchSigned, "kpi-quarter-row"));
+      row2Unit2.appendChild(wrapper(refFinchSigned, "kpi-quarter-row",0));
 
       let refNJPISigned = createChart(sessionId, appId, "PcAEtAQ");
-      row2Unit2.appendChild(wrapper(refNJPISigned, "kpi-quarter-row"));
+      row2Unit2.appendChild(wrapper(refNJPISigned, "kpi-quarter-row",0));
 
       let refNJGigSigned = createChart(sessionId, appId, "MfbrBEA");
-      row2Unit2.appendChild(wrapper(refNJGigSigned, "kpi-quarter-row"));
+      row2Unit2.appendChild(wrapper(refNJGigSigned, "kpi-quarter-row",0));
 
       let refNJOtherSigned = createChart(sessionId, appId, "dMFj");
-      row2Unit2.appendChild(wrapper(refNJOtherSigned, "kpi-quarter-row"));
+      row2Unit2.appendChild(wrapper(refNJOtherSigned, "kpi-quarter-row",0));
 
       kpiRow2.appendChild(row2Unit1);
       kpiRow2.appendChild(row2Unit2);
@@ -213,25 +255,25 @@
       row3Unit1.classList.add("kpi-unit-quarters");
 
       let refFinchSignedYest = createChart(sessionId, appId, "FapkJNe");
-      row3Unit1.appendChild(wrapper(refFinchSignedYest, "kpi-quarter-row"));
+      row3Unit1.appendChild(wrapper(refFinchSignedYest, "kpi-quarter-row",0));
 
       let refNJPISignedYest = createChart(sessionId, appId, "hNPWR");
-      row3Unit1.appendChild(wrapper(refNJPISignedYest, "kpi-quarter-row"));
+      row3Unit1.appendChild(wrapper(refNJPISignedYest, "kpi-quarter-row",0));
 
       let refNJGigSignedYest = createChart(sessionId, appId, "xTRpWe");
-      row3Unit1.appendChild(wrapper(refNJGigSignedYest, "kpi-quarter-row"));
+      row3Unit1.appendChild(wrapper(refNJGigSignedYest, "kpi-quarter-row" ,0));
 
       let refNJOtherSignedYest = createChart(sessionId, appId, "jxHRtSJ");
-      row3Unit1.appendChild(wrapper(refNJOtherSignedYest, "kpi-quarter-row"));
+      row3Unit1.appendChild(wrapper(refNJOtherSignedYest, "kpi-quarter-row",0));
 
       const row3Unit2 = document.createElement("div");
       row3Unit2.classList.add("kpi-unit-halves");
 
       let refTradSigned = createChart(sessionId, appId, "pBJE");
-      row3Unit2.appendChild(wrapper(refTradSigned, "kpi-half-row"));
+      row3Unit2.appendChild(wrapper(refTradSigned, "kpi-half-row",0));
 
       let refTier5Signed = createChart(sessionId, appId, "KaafPxN");
-      row3Unit2.appendChild(wrapper(refTier5Signed, "kpi-half-row"));
+      row3Unit2.appendChild(wrapper(refTier5Signed, "kpi-half-row",0));
 
       kpiRow3.appendChild(row3Unit1);
       kpiRow3.appendChild(row3Unit2);
@@ -245,16 +287,16 @@
       row4Unit1.classList.add("kpi-unit-halves");
 
       let refTradSignedYest = createChart(sessionId, appId, "FYXNwd");
-      row4Unit1.appendChild(wrapper(refTradSignedYest, "kpi-half-row"));
+      row4Unit1.appendChild(wrapper(refTradSignedYest, "kpi-half-row",0));
 
       let refPendingYest = createChart(sessionId, appId, "EZPyJY");
-      row4Unit1.appendChild(wrapper(refPendingYest, "kpi-half-row"));
+      row4Unit1.appendChild(wrapper(refPendingYest, "kpi-half-row",0));
 
       const row4Unit2 = document.createElement("div");
       row4Unit2.classList.add("kpi-unit");
 
       let refSaltzSigned = createChart(sessionId, appId, "dCdjbA");
-      row4Unit2.appendChild(wrapper(refSaltzSigned, "kpi-full-row"));
+      row4Unit2.appendChild(wrapper(refSaltzSigned, "kpi-full-row",0));
 
       kpiRow4.appendChild(row4Unit1);
       kpiRow4.appendChild(row4Unit2);
@@ -268,13 +310,13 @@
       row5Unit1.classList.add("kpi-unit");
 
       let refCreatedYestCancelled = createChart(sessionId, appId, "kGp");
-      row5Unit1.appendChild(wrapper(refCreatedYestCancelled, "kpi-full-row"));
+      row5Unit1.appendChild(wrapper(refCreatedYestCancelled, "kpi-full-row",0));
 
       const row5Unit2 = document.createElement("div");
       row5Unit2.classList.add("kpi-unit");
 
       let refTopCaseType = createChart(sessionId, appId, "VghWYs");
-      row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-saltz"));
+      row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-saltz",0));
 
       kpiRow5.appendChild(row5Unit1);
       kpiRow5.appendChild(row5Unit2);

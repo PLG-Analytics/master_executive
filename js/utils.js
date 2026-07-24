@@ -78,13 +78,13 @@ function createSelectionBar(identity, appId) {
 
 
 // function to wrap different charts with a className that will be used for styling
-function wrapper(chart, className) {
+function wrapper(chart, className, fullScreenFlag) {
   const wrapper = document.createElement("div");
   wrapper.classList.add(...className.split(" "));
   wrapper.appendChild(chart);
 
   // Only add the full screen option to pivot charts
-  if (className === "pivot-wrapper" || className === "jumbotron-wrapper") {
+  if (fullScreenFlag === 1) {
     addFullscreenButton(wrapper);
   }
   return wrapper;
