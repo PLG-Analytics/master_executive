@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Qlik Web Components library -->
+    <script
+        src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"
+        type="application/javascript"
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5"
+        data-access-token-storage="local">
+    </script>
+
+
+    <!-- Custom styles and scripts -->
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/utils.js"></script>
+
+    <!-- Responsive viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <style>
+    .inv-container {
+        width: 100%;
+        position: relative;
+    }
+
+    .filter-row-wrapper {
+        width: 250px;
+        height: 450px;
+        flex-shrink: 0;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .filter-row-wrapper qlik-embed {
+        width: 100%;
+        height: 100%;
+    }
+
+    .inv-charts-wrapper {
+        width: calc(100% - 270px);
+        height: 650px;
+        border: 1px solid #d3d3d3;
+        box-shadow: 0 3px 7px rgba(0,0,0,.10);
+        background: #fff;
+        position: relative;
+    }
+
+    .inv-charts-wrapper qlik-embed {
+        width: 100%;
+        height: 100%;
+        display: block;
+    }
+   
+    .content-row {
+        display: flex;
+        gap: 20px;
+        width: 100%;
+        align-items: flex-start;
+    }
+
+     /* Adjusting font size and padding for pivot charts to improve readability */
+    .inv-charts-wrapper [data-section-id="GRID"] * {
+        font-size: 15.5px !important;
+    }
+
+     /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+    .inv-charts-wrapper .fullscreen-btn {
+        right: 10px !important;
+    }
+
+    /* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+    .inv-charts-wrapper .browser-fullscreen .fullscreen-btn {
+        top: 20px !important;
+        right: 20px !important;
+    }
+
+    .inv-charts-wrapper.browser-fullscreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 9999;
+            background: white;
+            padding: 1.5%;
+            box-sizing: border-box;
+            border: none !important;
+        }
+
+    /* Responsive adjustments for different screen sizes */
+    /* Tablet */
+    @media (max-width: 1024px) {
+        .content-row {
+            flex-direction: column;
+        }
+
+        .filter-row-wrapper {
+            width: 100%;
+            height: 300px;
+        }
+
+        .inv-charts-wrapper {
+            width: 100%;
+            height: 600px;
+        }
+    }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+        .filter-row-wrapper {
+            width: 100%;
+            height: 250px;
+        }
+
+        .inv-charts-wrapper {
+            width: 100%;
+            height: 500px;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: center;
+        }
+
+    }
+
+    </style>
+
+</head>
+
+<body>
+  
+  <div class="dashboard-content">
+        <!-- Waffle button -->
+        <div class="waffle-button" onclick="toggleWaffle()">☰</div>
+        <div id="waffle-container"></div>
+
+        <div id="divLogo">   <img src="/Images/PL.png" alt="PLG Logo" id="imgLogo">   </div>
+
+        <h1> Global Inventory</h1>
+
+        <div class="toolbar">
+            <button id="btnClear" class="hidden" onclick="clearFilters()">  Clear All Filters  </button>
+        </div>
+        
+
+        <!-- will serve as the container for the Qlik charts -->
+        <div class="inv-container" id="inv-container"></div>
+
+        <div class="nav-arrows">
+            <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+                <span class="nav-icon">❮</span> 
+                <span class="nav-label">Jumbotron</span>
+            </div>
+
+            <div id="nextArrow" class="nav-arrow nav-arrow-next">
+                <span class="nav-label">Referral Summary</span> 
+                <span class="nav-icon">❯</span>
+            </div>
+        </div>
+
+
+    </div>
+
+
+
+  <script> 
+    initWaffle();
+
+    // Get references to the container, clear button, and navigation arrows
+    const container = document.getElementById("inv-container");
+    const btnClear = document.getElementById("btnClear");
+    const backArrow = document.getElementById("backArrow");
+    const nextArrow = document.getElementById("nextArrow");
+
+    // to allow for updating the chart on the first selection of a filter, we need to track whether the chart has been reloaded yet
+    let chartReloaded = false;
+    let currentAppId;
+    let currentContentRow;
+
+
+     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
+    async function waitForQlikAuth() {
+        await customElements.whenDefined("qlik-embed");
+
+        const tryBind = async () => {
+        const embed = document.querySelector("qlik-embed");
+        if (!embed) return;
+
+        // Check if the Qlik app is authorized
+        try {
+            const refApi = await embed.getRefApi();
+            const doc = await refApi.getDoc();
+
+            if (doc) {
+                console.log("Qlik authorized");
+
+                btnClear.classList.remove("hidden");
+                backArrow.classList.add("ready");
+
+                backArrow.onclick = () => { window.location.href = "execOverview.html"; };
+                nextArrow.classList.add("ready");
+                nextArrow.onclick = () => { window.location.href = "refExecSummary.html"; };
+
+                document.querySelector(".waffle-button").classList.remove("hidden");
+                document.getElementById("waffle-container").classList.remove("hidden");
+
+                document.querySelectorAll(".filter-row-wrapper, .inv-charts-wrapper, .fullscreen-btn").forEach(el => {
+                    el.classList.remove("hidden");
+                    el.classList.add("ready");
+                });
+
+                return true;
+            }
+        } catch (err) {
+            console.log("Error:", err);
+        }
+
+        return false;
+        };
+
+        const interval = setInterval(async () => {
+        const success = await tryBind();
+        if (success) clearInterval(interval);
+        }, 500);
+    }
+
+    //  render the dashboard with the appropriate Qlik charts for this page
+    function renderDashboard() {
+        currentAppId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776"; // Qlik App ID
+
+        // dept filter
+        let deptFilter = createChart( currentAppId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
+        currentContentRow = document.createElement("div");
+        currentContentRow.classList.add("content-row");
+        // filter
+        const filterWrapper = wrapper(deptFilter, "filter-row-wrapper",0);
+
+        // Add a click event listener to the filter wrapper to reload the chart when a filter is selected
+        filterWrapper.addEventListener(
+            "click",
+            () => {
+                if (chartReloaded) return;
+
+                chartReloaded = true;
+
+                setTimeout(() => {
+                    reloadChartOnly();
+                }, 1000); // gives Qlik time to apply selection
+            },
+            { once: true }
+        );
+
+        currentContentRow.appendChild(filterWrapper);
+
+        // chart 
+        let globalInv = createChart(currentAppId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
+        currentContentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper",1));
+
+        container.appendChild(currentContentRow);
+            
+        waitForQlikAuth();
+    }
+
+    // reload the chart with a new session ID, but keep the same filters applied - Important for initial filter selection to be applied to the chart
+    function reloadChartOnly() {
+        console.log("reloadChartOnly called");
+
+        const oldWrapper = document.querySelector(".inv-charts-wrapper");
+
+        if (!oldWrapper) return;
+
+        const parent = oldWrapper.parentNode;
+
+        oldWrapper.remove();
+
+        const newChart = createChart(
+            currentAppId,
+            "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6"
+        );
+
+        const newWrapper = wrapper(newChart, "inv-charts-wrapper",1);
+        newWrapper.classList.remove("hidden");
+        
+        parent.appendChild(newWrapper);
+
+        waitForQlikAuth();
+        document.querySelectorAll('.sn-copy-cell[title]')
+            .forEach(cell => {
+                console.log(cell.title, cell.style.width);
+            });
+        console.log("Chart regenerated");
+    }
+
+    renderDashboard();
+    
+    //  Clear filters and re-render the chart with a new identity
+    async function clearFilters() {
+        try {
+            const filterEmbed = document.querySelector(".filter-row-wrapper qlik-embed");
+
+            if (filterEmbed) {
+                const refApi = await filterEmbed.getRefApi();
+                const app = await refApi.getDoc();
+
+                await app.clearAll();
+                console.log("All filters cleared");
+            }
+
+            chartReloaded = false;
+
+        } catch (err) {
+            console.error("Failed to clear filters:", err);
+        }
+    }
+
+  </script>
+
+</body>

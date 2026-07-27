@@ -1,0 +1,156 @@
+
+<!--
+To use this template, copy the file to a new name and update the following:
+- Update the <h2> title to reflect the new page's purpose
+- Update the container ID and class in the <div> that will hold the Qlik charts (currently "container")
+- Update the renderDashboard() function to render the appropriate Qlik charts for this page - appropriate app id and chart id(s)
+- Update the navigation arrows to point to the correct previous and next pages (lines 87, 89)
+- In renderDashboard(), pass the appropriate className that you will be using for styling the Qlik charts to the wrapper() function.
+    Additionally, you may need to add new CSS classes in the <style> section to style the charts appropriately.
+    Update rows 94-97 with the appropriate className for your charts.
+- Update nav.html with the name of the new page in the correct order
+- Update home page with an overview of the new page and a link to it
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Qlik Web Components library -->
+  <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/js/utils.js"></script>
+
+  <script
+    data-host="https://pondlehocky.us.qlikcloud.com"
+    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+    data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+    data-auth-type="Oauth2"
+    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
+  </script>
+
+</head>
+
+<body>
+  <div class="dashboard-content">
+    <!-- Waffle button -->
+    <div class="waffle-button hidden" onclick="toggleWaffle()">☰</div>
+
+    <!-- Waffle menu container -->
+    <div id="waffle-container" class="hidden"></div>
+
+    <div id="divLogo"><img src="/Images/PL.png" alt="PLG Logo" id="imgLogo"> </div>  
+
+    <h1> TEMPLATE </h1>
+
+    <div class="toolbar">
+      <button id="btnClear" class="hidden" onclick="clearFilters()"> Clear All Filters  </button>
+    </div>
+
+    <!-- will serve as the container for the Qlik charts -->
+    <div class="overview-container" id="overviewContainer"></div>
+
+    <div class="nav-arrows">
+      <div id="backArrow" class="nav-arrow nav-arrow-back"> 
+        <span class="nav-icon">❮</span> 
+          <span class="nav-label">PREV PAGE</span>
+      </div>
+
+      <div id="nextArrow" class="nav-arrow nav-arrow-next">
+        <span class="nav-label">NEXT PAGE</span> 
+        <span class="nav-icon">❯</span>
+      </div>
+      </div>
+
+  </div>
+
+  <script> 
+    initWaffle();
+
+    // Get references to the container, clear button, and navigation arrows
+    const container = document.getElementById("container");
+    const btnClear = document.getElementById("btnClear");
+    const nextArrow = document.getElementById("nextArrow");
+    const backArrow = document.getElementById("backArrow");
+    let appId = "";  // Qlik App ID
+    let sessionId = "session-" + Date.now();
+
+
+    // Wait for Qlik to finish authorizing the user before showing relevant UI elements
+    async function waitForQlikAuth() {
+      const actionBtn = document.getElementById("btnClear");
+
+      await customElements.whenDefined("qlik-embed");
+
+      const tryBind = async () => {
+        const embed = document.querySelector("qlik-embed");
+        if (!embed) return;
+
+        try {
+          const refApi = await embed.getRefApi();
+          const doc = await refApi.getDoc();
+
+          if (doc) {
+            console.log("Qlik authorized");
+
+            btnClear.classList.remove("hidden");  
+            backArrow.classList.add("ready");
+
+            backArrow.onclick = () => { window.location.href = "index.html"; };
+            nextArrow.classList.add("ready");
+            nextArrow.onclick = () => { window.location.href = "template.html"; };
+
+            document.querySelector(".waffle-button").classList.remove("hidden");
+            document.getElementById("waffle-container").classList.remove("hidden");
+
+            document.querySelectorAll(".test-row, .test2-container").forEach(el => {
+                  el.classList.remove("hidden");
+                  el.classList.add("ready");
+            });
+
+            return true;
+          }
+        } catch (err) {
+          console.log("Error:", err);
+        }
+
+        return false;
+      };
+
+      const interval = setInterval(async () => {
+        const success = await tryBind();
+        if (success) clearInterval(interval);
+      }, 500);
+    }
+
+    //  render the dashboard with the appropriate Qlik charts for this page
+    function renderDashboard() {
+      let testKPI = createChart(sessionId, appId, "757d908e-3f3d-499f-bb81-94cc80fbc00a");     
+      const kpiRow = document.createElement("div");
+      kpiRow.appendChild(wrapper(testKPI, "test-class"));
+
+      container.appendChild(kpiRow);
+
+      waitForQlikAuth();
+    }
+
+    renderDashboard();
+
+    // Clear filters and re-render the chart with a new identity
+    async function clearFilters() {
+        const embed = document.querySelector('#divFilterBar qlik-embed');
+
+        if (embed) {
+            const refApi = await embed.getRefApi();
+            const app = await refApi.getDoc();
+
+            await app.clearAll();
+        }
+    }
+
+  </script>
+
+</body>
