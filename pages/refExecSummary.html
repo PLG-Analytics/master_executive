@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
 
     <!-- Qlik Web Components library -->
-    <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"
+        type="application/javascript"
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5"
+        data-access-token-storage="local">
+    </script>
+
 
     <!-- Custom styles and scripts -->
     <link rel="stylesheet" href="/css/styles.css">
@@ -111,13 +121,6 @@
       }
     </style>
 
-    <script
-        data-host="https://pondlehocky.us.qlikcloud.com"
-        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
-        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
-        data-auth-type="Oauth2"
-        data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
-  </script>
 
 </head>
 
@@ -151,7 +154,6 @@
     const container = document.getElementById("refContainer");
     const backArrow = document.getElementById("backArrow");
     let appId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776";  // Qlik App ID
-    let sessionId = "session-" + Date.now();
 
 
     // Wait for Qlik to finish authorizing the user before showing relevant UI elements
@@ -205,13 +207,13 @@
       const row1Unit1 = document.createElement("div");
       row1Unit1.classList.add("kpi-unit");
 
-      let refCreatedYest = createChart(sessionId, appId, "HxzrgR");
+      let refCreatedYest = createChart(appId, "HxzrgR");
       row1Unit1.appendChild(wrapper(refCreatedYest, "kpi-full-row",0));
 
       const row1Unit2 = document.createElement("div");
       row1Unit2.classList.add("kpi-unit");
 
-      let refSentThisMonth = createChart(sessionId, appId, "KpwJBx");
+      let refSentThisMonth = createChart(appId, "KpwJBx");
       row1Unit2.appendChild(wrapper(refSentThisMonth, "kpi-full-row",0));
 
       kpiRow1.appendChild(row1Unit1);
@@ -225,22 +227,22 @@
       const row2Unit1 = document.createElement("div");
       row2Unit1.classList.add("kpi-unit");
 
-      let refCreatedYestUR = createChart(sessionId, appId, "Eube");
+      let refCreatedYestUR = createChart(appId, "Eube");
       row2Unit1.appendChild(wrapper(refCreatedYestUR, "kpi-full-row",0));
 
       const row2Unit2 = document.createElement("div");
       row2Unit2.classList.add("kpi-unit-quarters");
 
-      let refFinchSigned = createChart(sessionId, appId, "EJpJW");
+      let refFinchSigned = createChart(appId, "EJpJW");
       row2Unit2.appendChild(wrapper(refFinchSigned, "kpi-quarter-row",0));
 
-      let refNJPISigned = createChart(sessionId, appId, "PcAEtAQ");
+      let refNJPISigned = createChart(appId, "PcAEtAQ");
       row2Unit2.appendChild(wrapper(refNJPISigned, "kpi-quarter-row",0));
 
-      let refNJGigSigned = createChart(sessionId, appId, "MfbrBEA");
+      let refNJGigSigned = createChart(appId, "MfbrBEA");
       row2Unit2.appendChild(wrapper(refNJGigSigned, "kpi-quarter-row",0));
 
-      let refNJOtherSigned = createChart(sessionId, appId, "dMFj");
+      let refNJOtherSigned = createChart(appId, "dMFj");
       row2Unit2.appendChild(wrapper(refNJOtherSigned, "kpi-quarter-row",0));
 
       kpiRow2.appendChild(row2Unit1);
@@ -254,25 +256,25 @@
       const row3Unit1 = document.createElement("div");
       row3Unit1.classList.add("kpi-unit-quarters");
 
-      let refFinchSignedYest = createChart(sessionId, appId, "FapkJNe");
+      let refFinchSignedYest = createChart(appId, "FapkJNe");
       row3Unit1.appendChild(wrapper(refFinchSignedYest, "kpi-quarter-row",0));
 
-      let refNJPISignedYest = createChart(sessionId, appId, "hNPWR");
+      let refNJPISignedYest = createChart( appId, "hNPWR");
       row3Unit1.appendChild(wrapper(refNJPISignedYest, "kpi-quarter-row",0));
 
-      let refNJGigSignedYest = createChart(sessionId, appId, "xTRpWe");
+      let refNJGigSignedYest = createChart( appId, "xTRpWe");
       row3Unit1.appendChild(wrapper(refNJGigSignedYest, "kpi-quarter-row" ,0));
 
-      let refNJOtherSignedYest = createChart(sessionId, appId, "jxHRtSJ");
+      let refNJOtherSignedYest = createChart( appId, "jxHRtSJ");
       row3Unit1.appendChild(wrapper(refNJOtherSignedYest, "kpi-quarter-row",0));
 
       const row3Unit2 = document.createElement("div");
       row3Unit2.classList.add("kpi-unit-halves");
 
-      let refTradSigned = createChart(sessionId, appId, "pBJE");
+      let refTradSigned = createChart( appId, "pBJE");
       row3Unit2.appendChild(wrapper(refTradSigned, "kpi-half-row",0));
 
-      let refTier5Signed = createChart(sessionId, appId, "KaafPxN");
+      let refTier5Signed = createChart( appId, "KaafPxN");
       row3Unit2.appendChild(wrapper(refTier5Signed, "kpi-half-row",0));
 
       kpiRow3.appendChild(row3Unit1);
@@ -286,16 +288,16 @@
       const row4Unit1 = document.createElement("div");
       row4Unit1.classList.add("kpi-unit-halves");
 
-      let refTradSignedYest = createChart(sessionId, appId, "FYXNwd");
+      let refTradSignedYest = createChart( appId, "FYXNwd");
       row4Unit1.appendChild(wrapper(refTradSignedYest, "kpi-half-row",0));
 
-      let refPendingYest = createChart(sessionId, appId, "EZPyJY");
+      let refPendingYest = createChart( appId, "EZPyJY");
       row4Unit1.appendChild(wrapper(refPendingYest, "kpi-half-row",0));
 
       const row4Unit2 = document.createElement("div");
       row4Unit2.classList.add("kpi-unit");
 
-      let refSaltzSigned = createChart(sessionId, appId, "dCdjbA");
+      let refSaltzSigned = createChart( appId, "dCdjbA");
       row4Unit2.appendChild(wrapper(refSaltzSigned, "kpi-full-row",0));
 
       kpiRow4.appendChild(row4Unit1);
@@ -309,13 +311,13 @@
       const row5Unit1 = document.createElement("div");
       row5Unit1.classList.add("kpi-unit");
 
-      let refCreatedYestCancelled = createChart(sessionId, appId, "kGp");
+      let refCreatedYestCancelled = createChart( appId, "kGp");
       row5Unit1.appendChild(wrapper(refCreatedYestCancelled, "kpi-full-row",0));
 
       const row5Unit2 = document.createElement("div");
       row5Unit2.classList.add("kpi-unit");
 
-      let refTopCaseType = createChart(sessionId, appId, "VghWYs");
+      let refTopCaseType = createChart( appId, "VghWYs");
       row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-saltz",0));
 
       kpiRow5.appendChild(row5Unit1);

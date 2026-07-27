@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <link rel="stylesheet" href="/css/styles.css">
-  <script src="/js/utils.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"
+        type="application/javascript"
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5"
+        data-access-token-storage="local">
+    </script>
+
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/utils.js"></script>
 </head>
 
 
@@ -185,7 +196,7 @@
 
 
 <body>
-  <div class="page-content">
+  <div class="page-content hidden" >
     <!-- Waffle button -->
     <div class="waffle-button" onclick="toggleWaffle()">☰</div>
     <div id="waffle-container"></div>
@@ -324,7 +335,8 @@
         <div class="info-card-content">
             <p><strong>Filtering:</strong> Columns displaying the ☰ menu support filtering and selections.</p>
             <p><strong>Finding Values:</strong> Open the ☰ menu and use Search to quickly locate specific values.</p>
-            <p><strong>Filter Selections:</strong> Selections do not carry between pages. Each page maintains its own filters. Similarly, <i>Clear All Filters</i> only applies to the current page.</p>
+            <p><strong>Filter Selections:</strong> Selections carry between pages, where applicable.
+                 <i>Clear All Filters</i> clears filters on all pages.</p>
         </div>
     </details>
 
@@ -362,16 +374,38 @@
 
   </div>
 
+
 <script>
-  initWaffle();
-  
-  const indexNextArrow = document.getElementById("indexNextArrow");
+    const indexNextArrow = document.getElementById("indexNextArrow");
+    initWaffle();
+    (async () => {
 
-  indexNextArrow.onclick = () => {
-      window.location.href = "execOverview.html";
-  };
+        const authChart = createChart(
+            "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776",
+            "0332fafa-7747-42af-bcf9-58d0b577ff5c"
+        );
 
+        authChart.style.display = "none";
+        document.body.appendChild(authChart);
 
+        await customElements.whenDefined("qlik-embed");
+
+        const refApi = await authChart.getRefApi();
+
+        // This triggers OAuth
+        await refApi.getDoc();
+
+        authChart.remove();
+
+        document
+            .querySelector(".page-content")
+            .classList.remove("hidden");
+        
+        indexNextArrow.onclick = () => {
+        window.location.href = "execOverview.html";
+    };
+
+    })();
 </script>
 
 </body>

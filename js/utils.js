@@ -1,3 +1,22 @@
+const QLIK_HOST = "https://pondlehocky.us.qlikcloud.com";
+const WEB_INTEGRATION_ID = "uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5";
+
+
+async function ensureAuthenticated() {
+
+    const response = await fetch(
+        `${QLIK_HOST}/api/v1/users/me`,
+        {
+            credentials: "include",
+            headers: {
+                "qlik-web-integration-id": WEB_INTEGRATION_ID
+            }
+        }
+    );
+
+    return response.ok;
+}
+
 // Toggle waffle menu
 function toggleWaffle() {
   const menu = document.getElementById("waffleMenu");
@@ -56,23 +75,24 @@ function initWaffle() {
 }
 
 // generate qlik with a unique identity for each session with appId and objectId
-function createChart(identity, appId, objectId) {
+function createChart(appId, objectId) {
   const embed = document.createElement("qlik-embed");
 
   embed.setAttribute("ui", "analytics/chart");
   embed.setAttribute("app-id",appId);
   embed.setAttribute("object-id", objectId);
-  embed.setAttribute("identity", identity);
 
+  embed.setAttribute("theme", "Sense Horizon");
   return embed;
 }
 
+
 // generate qlik selection bar with a unique identity for each session with appId
-function createSelectionBar(identity, appId) {
+function createSelectionBar(appId) {
   const embed = document.createElement("qlik-embed");
   embed.setAttribute("ui", "analytics/selections");
   embed.setAttribute("app-id", appId);
-  embed.setAttribute("identity", identity);
+  embed.setAttribute("theme", "Sense Horizon");
   return embed;
 }
 
@@ -85,8 +105,9 @@ function wrapper(chart, className, fullScreenFlag) {
 
   // Only add the full screen option to pivot charts
   if (fullScreenFlag === 1) {
-    addFullscreenButton(wrapper);
+      addFullscreenButton(wrapper);
   }
+
   return wrapper;
 }
 

@@ -4,7 +4,17 @@
     <meta charset="UTF-8">
 
     <!-- Qlik Web Components library -->
-    <script src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/@qlik/embed-web-components/dist/index.min.js"
+        type="application/javascript"
+        data-host="https://pondlehocky.us.qlikcloud.com"
+        data-client-id="019ed7386b4d654809b0cc31effbd1d7"
+        data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
+        data-auth-type="Oauth2"
+        data-web-integration-id="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5"
+        data-access-token-storage="local">
+    </script>
+
 
     <!-- Custom styles and scripts -->
     <link rel="stylesheet" href="/css/styles.css">
@@ -13,13 +23,6 @@
     <!-- Responsive viewport -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <script
-    data-host="https://pondlehocky.us.qlikcloud.com"
-    data-client-id="019ed7386b4d654809b0cc31effbd1d7"
-    data-redirect-uri="http://127.0.0.1:5500/pages/oauth-callback.html"
-    data-auth-type="Oauth2"
-    data-web-integration-id ="uf8UGUYKg4vvpHxhI3eMavSK0n9zIGc5" >
-  </script>
 
   <style>
     .inv-container {
@@ -179,7 +182,6 @@
 
     // to allow for updating the chart on the first selection of a filter, we need to track whether the chart has been reloaded yet
     let chartReloaded = false;
-    let currentSessionId;
     let currentAppId;
     let currentContentRow;
 
@@ -213,7 +215,7 @@
                 document.querySelectorAll(".filter-row-wrapper, .inv-charts-wrapper, .fullscreen-btn").forEach(el => {
                     el.classList.remove("hidden");
                     el.classList.add("ready");
-            });
+                });
 
                 return true;
             }
@@ -234,12 +236,8 @@
     function renderDashboard() {
         currentAppId = "85e0e56a-1e2b-4cbf-8a87-ff3a884f2776"; // Qlik App ID
 
-        if (!currentSessionId) { // unique session ID for this page load
-            currentSessionId = "session-" + Date.now();
-        }
-
         // dept filter
-        let deptFilter = createChart(currentSessionId, currentAppId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
+        let deptFilter = createChart( currentAppId, "ff56f0ae-3649-4bb7-a88f-75ac722de2cd");     
         currentContentRow = document.createElement("div");
         currentContentRow.classList.add("content-row");
         // filter
@@ -263,7 +261,7 @@
         currentContentRow.appendChild(filterWrapper);
 
         // chart 
-        let globalInv = createChart(currentSessionId, currentAppId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
+        let globalInv = createChart(currentAppId, "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6" ); // container for the charts
         currentContentRow.appendChild(wrapper(globalInv, "inv-charts-wrapper",1));
 
         container.appendChild(currentContentRow);
@@ -284,7 +282,6 @@
         oldWrapper.remove();
 
         const newChart = createChart(
-            currentSessionId,
             currentAppId,
             "c4e8e1a1-6a92-4036-88cf-059f3b03dcb6"
         );
