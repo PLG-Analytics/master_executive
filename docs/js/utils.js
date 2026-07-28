@@ -119,7 +119,7 @@ function addFullscreenButton(wrapperElement) {
 
   // Create icon
   const icon = document.createElement("img");
-  icon.src = "../Images/expand.png";     // adjust path if needed
+  icon.src = "https://plg-analytics.github.io/master_executive/Images/expand.png";     // adjust path if needed
   icon.alt = "Expand";
 
   btn.appendChild(icon);
@@ -128,11 +128,11 @@ function addFullscreenButton(wrapperElement) {
     e.stopPropagation();
     wrapperElement.classList.toggle("browser-fullscreen");
     if (wrapperElement.classList.contains("browser-fullscreen")) {
-      icon.src = "../Images/collapse.png";
+      icon.src = "https://plg-analytics.github.io/master_executive/Images/collapse.png";
       icon.alt = "Collapse";
       btn.title = "Restore Size";
     } else {
-      icon.src = "../Images/expand.png";
+      icon.src = "https://plg-analytics.github.io/master_executive/Images/expand.png";
       icon.alt = "Expand";
       btn.title = "Full Screen";
     }
