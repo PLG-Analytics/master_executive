@@ -128,7 +128,7 @@ function addFullscreenButton(wrapperElement) {
     e.stopPropagation();
     wrapperElement.classList.toggle("browser-fullscreen");
     if (wrapperElement.classList.contains("browser-fullscreen")) {
-      icon.src = "/Images/collapse.png";
+      icon.src = "https://plg-analytics.github.io/master_executive/Images/collapse.png";
       icon.alt = "Collapse";
       btn.title = "Restore Size";
     } else {
