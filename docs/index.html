@@ -16,183 +16,11 @@
     </script>
 
     <link rel="stylesheet" href="https://plg-analytics.github.io/master_executive/css/styles.css">
+    <link rel="stylesheet" href="https://plg-analytics.github.io/master_executive/css/index.css">
+
     <script src="https://plg-analytics.github.io/master_executive/js/utils.js"></script>
+    <script src="https://plg-analytics.github.io/master_executive/js/qlik.js"></script>
 </head>
-
-
-<style> 
-    .index-nav-container {
-        width: 100%;
-        margin-top: auto;
-        padding-top: 20px;
-
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    /* Formatting the arrow - specific for index*/
-    .index-nav-arrow {
-        bottom: 20px;
-        right: 20px;
-
-        display: flex;
-        align-items: center;
-        gap: 8px;
-
-        white-space: nowrap;
-
-        font-size: 28px;
-        color: #2d6fb7;
-        font-weight: bold;
-        cursor: pointer;
-        user-select: none;
-        z-index: 1000;
-    }
-
-    .index-nav-arrow:hover {
-        color: #1f4f82;
-    }
-
-    /* Formatting table that has overview of the reports*/
-    .report-contents {
-        width: 100%;
-        max-width: 1550px;
-        border-collapse: collapse;
-        margin-top: 20px;
-        border: 2px solid #12284c; 
-    }
-
-    /* Formatting table header*/
-    .report-contents th {
-        background-color: #12284c;
-        color: white;
-        text-align: left;
-        padding: 12px;
-        border: 1px solid #12284c;
-    }
-
-    /* Formatting table cells*/
-    .report-contents td {
-        padding: 12px;
-        border: 1px solid #12284c;
-        vertical-align: top;
-        line-height: 1.6;
-    }
-
-    /* Adding light zebra row colors*/
-    .report-contents tr:nth-child(even) {
-        background-color: #f8f9fb;
-    }
-
-    /* Adding hover color on the row*/
-    .report-contents tbody tr {
-        transition: background-color 0.2s ease;
-    }
-
-    .report-contents tbody tr:hover {
-        background-color: #eef4fb;
-    }
-
-    .report-contents tbody tr:hover td:first-child {
-        border-left: 4px solid #2d6fb7;
-    }
-
-    /* Formatting the link directing to the report page*/
-    .report-link {
-        color: #2d6fb7;
-        text-decoration: none;
-        font-weight: 600;
-    }
-
-    /* Formatting the link directing to the report page - adding an underline when hovering*/
-    .report-link:hover {
-        color: #1f4f82;
-        text-decoration: underline;
-    }
-
-    /* Report Overview content for a smaller screen */
-    .mobile-report-cards {
-        display: none;
-    }
-
-    /* Styling the card layout*/
-    .info-card-toggle {
-        margin: 20px 0;
-        border: 1px solid #d3d3d3;
-        border-left: 5px solid #12284c;
-        border-radius: 6px;
-        background: #fff;
-        box-shadow: 0 3px 7px rgba(0,0,0,.10);
-        overflow: hidden;
-    }
-
-    .info-card-toggle summary { /*Styling the text in the tab*/
-        padding: 14px 22px;
-        font-size: 1.2rem;  
-        font-weight: 600;
-        cursor: pointer;
-        list-style: none;
-        position: relative;
-    }
-
-
-    .info-card-toggle summary::-webkit-details-marker {
-        display: none;
-    }
-
-    .info-card-toggle summary::after {
-        content: "▼";
-        position: absolute;
-        right: 20px;
-        transition: transform 0.2s ease;
-    }
-
-    .info-card-toggle[open] summary::after {
-        transform: rotate(180deg);
-    }
-
-    .info-card-content {
-        padding: 0 22px 22px;
-    }
-
-    .info-card-content p {
-        line-height: 1.6;
-        margin: 12px 0;
-    }
-
-  /* Responsive adjustments for different screen sizes */
-    @media (max-width: 768px) {
-        .report-contents { /* hide report content table*/
-            display: none;
-        }
-
-        .mobile-report-cards {  /*show the responsive table*/
-            display: block;
-        }
-
-        .report-card { /*format reponsive content*/
-            background: #fff;
-            border: 1px solid #d3d3d3;
-            border-left: 5px solid #12284c;
-            border-radius: 6px;
-            padding: 16px;
-            margin-bottom: 15px;
-            box-shadow: 0 3px 7px rgba(0,0,0,.10);
-        }
-
-        .report-card h3 { /*format reponsive content headers*/
-            margin: 0 0 12px 0;
-            font-size: 1.1rem;
-        }
-
-        .report-card p {  /*format reponsive content text*/
-            margin: 10px 0;
-            line-height: 1.5;
-        }
-    }
-
-
-</style>
 
 
 <body>
@@ -357,7 +185,7 @@
         <summary>Analytics Contacts</summary>
 
         <div class="info-card-content">
-            <p> Megha Patel:  <a href="mailto:mpatel@pondlehocky.com">mpatel@pondlehocky.com</a> </p> 
+            <p>Megha Patel:  <a href="mailto:mpatel@pondlehocky.com">mpatel@pondlehocky.com</a> </p> 
             <p>Kevin Doyle:   <a href="mailto:kdoyle@pondlehocky.com">kdoyle@pondlehocky.com</a>  </p>
         </div>
     </details>
@@ -402,7 +230,7 @@
             .classList.remove("hidden");
         
         indexNextArrow.onclick = () => {
-        window.location.href = "execOverview.html";
+        window.location.href = "pages/execOverview.html";
     };
 
     })();

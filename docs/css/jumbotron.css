@@ -1,0 +1,306 @@
+/* Styles specific to the Executive Overview (aka Jumbotron page)*/
+
+h1 {
+    margin: 0 0 24px;
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+qlik-embed {
+    display: block !important;
+    width: 100%;
+    height: 100%;
+    min-height: inherit;
+}
+
+.kpi-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.kpi-wrapper {
+    flex: 1;
+    min-width: 250px;
+    height: 250px;
+}
+
+.kpi-wrapper,
+.jumbotron-wrapper,
+.pivot-wrapper,
+.break-wrapper {
+    position: relative;
+}
+
+
+.kpi-wrapper,
+.jumbotron-wrapper,
+.pivot-wrapper{
+    border: 1px solid #d3d3d3;
+    box-shadow: 0 3px 7px rgba(0,0,0,.10);
+    background: #fff;
+}
+
+
+/* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
+.kpi-wrapper {
+    flex: 1 1 0;
+    min-width: 0;       
+    height: 150px;
+}
+
+/* Ensuring that the Qlik embed component within the KPI wrapper takes up the full space of its parent */
+.kpi-wrapper qlik-embed {
+    width: 100%;
+    height: 100%;       
+}
+
+.jumbotron-wrapper {
+    width: 100%;
+    height: 450px; 
+    margin-bottom: 15px;
+    margin-top: 15px;
+}
+
+.jumbotron-wrapper qlik-embed {
+    width: 100%;
+    height: 100%;
+}
+/* Styling the KPI row to display KPIs in a horizontal layout with spacing */
+.funnel-row {
+    display: flex;
+    gap: 15px;
+    height: 375px;
+    margin-bottom: 15px; 
+    margin-top: 15px;
+}
+
+/* Styling the KPI wrapper to ensure each KPI has a consistent size and layout */
+.pivot-wrapper {  
+    flex:1;
+    min-width: 0;
+    height: 100%;   
+    display: flex;      
+}    
+
+/* Adjusting font size and padding for pivot charts to improve readability */
+.jumbotron-wrapper [data-section-id="GRID"] * {
+    font-size: 15.5px !important;
+}
+
+/* Adjusting font size and padding for pivot charts to improve readability */
+.pivot-wrapper [data-section-id="GRID"] * {
+    font-size: 15.5px !important;
+}
+
+
+#divFilterBar qlik-embed {
+    width: 100%;
+    height: 50px;
+    display: block;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+#divFilterBar {
+    width: 100%;
+    min-height: 50px;
+}
+        
+.selection-wrapper {
+    min-height: 50px;
+}
+
+.filter-bar-wrapper {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.filter-bar-wrapper qlik-embed {
+    display: block;
+    width: 100%;
+    min-height: 60px;
+}
+
+#btnDataContext {
+    background-color: #0097ce;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 5px;
+}
+
+/* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+.jumbotron-wrapper .fullscreen-btn {
+    right: 10px !important;
+}
+
+/* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+.jumbotron-wrapper.browser-fullscreen .fullscreen-btn {
+    top: 20px !important;
+    right: 20px !important;
+}
+
+.pivot-wrapper.browser-fullscreen,
+.jumbotron-wrapper.browser-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: white;
+    padding: 1.5%;
+    box-sizing: border-box;
+    border: none !important;
+    margin: 0 !important;
+}
+
+/* Data Context Popup */
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-context {       
+    background: white;
+    width: 700px;
+    max-width: 90%;
+    padding: 30px 35px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.data-context-list {
+    margin-top: 20px;
+    padding-left: 24px;
+}
+    
+.data-context-list li {
+    margin-bottom: 16px;
+    line-height: 1.5;
+    font-size: 16px;
+}
+
+.data-context-list li:last-child {
+    margin-bottom: 0;
+}
+
+.close-modal {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/*Styling the toggle button for funnel analytics*/
+.pivot-toggle-btn {
+    display: block;
+    margin-top: 10px;
+    background-color: #0097ce;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Styling the hover, color, etc for when the pivots are expanded/collapsed for a seamless move*/
+.hide-pivot-menu .MuiPopover-root,
+.hide-pivot-menu .MuiMenu-root,
+.hide-pivot-menu [role="menu"] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+}
+
+.hide-pivot-menu .eYuuZI {
+    background-color: inherit !important;
+    box-shadow: none !important;
+    outline: none !important;
+}
+
+/*Prevent a page jump effect when expanding/collapsing*/
+body.hide-pivot-menu {
+    padding-right: 0 !important;
+    overflow: auto !important;
+}
+
+/* Disabled button look*/
+#btnPivotToggle:disabled {
+    background-color: #b0b0b0 !important;
+    color: #ffffff !important;
+    cursor: wait;
+    opacity: 0.8;
+}
+
+/* Responsive adjustments for different screen sizes */
+/* Tablet */
+@media (max-width: 1024px) {
+    .kpi-row {
+        flex-wrap: wrap;
+    }
+
+    .kpi-wrapper {
+        flex: 1 1 calc(33.33% - 10px);
+        min-width: 300px;
+    }
+
+    .funnel-row {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .jumbotron-wrapper {
+        height: 450px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .dashboard-content {
+        padding: 10px;
+    }
+
+    .kpi-row {
+        flex-direction: column;
+    }
+
+    .kpi-wrapper {
+        width: 100%;
+        height: 250px;
+    }
+
+    .jumbotron-wrapper {
+        height: 450px;
+    }
+
+    .funnel-row {
+        flex-direction: column;
+        gap: 10px;
+    }     
+
+    .modal-context {
+        width: 95%;
+        padding: 20px;
+    }
+}
