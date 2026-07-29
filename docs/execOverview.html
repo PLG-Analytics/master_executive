@@ -268,6 +268,14 @@
             overflow: auto !important;
         }
 
+        /* Disabled button look*/
+        #btnPivotToggle:disabled {
+            background-color: #b0b0b0 !important;
+            color: #ffffff !important;
+            cursor: wait;
+            opacity: 0.8;
+        }
+
         /* Responsive adjustments for different screen sizes */
         /* Tablet */
         @media (max-width: 1024px) {
@@ -621,6 +629,7 @@
     
     // Handle the toggle and format of the button
     async function togglePivot() {
+        document.getElementById("btnPivotToggle").disabled = true; // add disabled property to prevent multiple clicks
 
         document.body.classList.add("hide-pivot-menu");
 
@@ -668,17 +677,18 @@
             }
 
         } finally {
+            document.querySelectorAll('.MuiPopover-root').forEach(el => {
+                el.remove();
+            });
 
-    document.querySelectorAll('.MuiPopover-root').forEach(el => {
-        el.remove();
-    });
+            document.querySelectorAll('.MuiMenu-root').forEach(el => {
+                el.remove();
+            });
 
-    document.querySelectorAll('.MuiMenu-root').forEach(el => {
-        el.remove();
-    });
+            document.body.classList.remove("hide-pivot-menu");
 
-    document.body.classList.remove("hide-pivot-menu");
-}
+            document.getElementById("btnPivotToggle").disabled = false; // removed disabled property
+        }
     }
 
 </script>
