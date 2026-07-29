@@ -225,6 +225,11 @@ qlik-embed {
     z-index: 10000 !important;
 }
 
+/* Updated z index for the search dropdown in tables so that it appears when the chart is full screened */
+.njs-d10b-Popover-root.listbox-container.njs-d10b-Modal-root {
+    z-index: 10000 !important;
+}
+
 @media (max-width: 768px) {
     .nav-label {
         display: none;
