@@ -1,0 +1,108 @@
+/* Styles specific to the Inventory html page*/
+
+.inv-container {
+    width: 100%;
+    position: relative;
+}
+
+.filter-row-wrapper {
+    width: 250px;
+    height: 450px;
+    flex-shrink: 0;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.filter-row-wrapper qlik-embed {
+    width: 100%;
+    height: 100%;
+}
+
+.inv-charts-wrapper {
+    width: calc(100% - 270px);
+    height: 650px;
+    border: 1px solid #d3d3d3;
+    box-shadow: 0 3px 7px rgba(0,0,0,.10);
+    background: #fff;
+    position: relative;
+}
+
+.inv-charts-wrapper qlik-embed {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.content-row {
+    display: flex;
+    gap: 20px;
+    width: 100%;
+    align-items: flex-start;
+}
+
+    /* Adjusting font size and padding for pivot charts to improve readability */
+.inv-charts-wrapper [data-section-id="GRID"] * {
+    font-size: 15.5px !important;
+}
+
+    /* Normal screen: Adjusting the position of the fullscreen button for jumbotron charts to ensure it doesn't overlap with KPIs */
+.inv-charts-wrapper .fullscreen-btn {
+    right: 10px !important;
+}
+
+/* Fullscreen: Adjusting the position of the fullscreen button for jumbotron charts when in fullscreen mode */
+.inv-charts-wrapper .browser-fullscreen .fullscreen-btn {
+    top: 20px !important;
+    right: 20px !important;
+}
+
+.inv-charts-wrapper.browser-fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    background: white;
+    padding: 1.5%;
+    box-sizing: border-box;
+    border: none !important;
+    margin: 0 !important;
+    }
+
+/* Responsive adjustments for different screen sizes */
+/* Tablet */
+@media (max-width: 1024px) {
+    .content-row {
+        flex-direction: column;
+    }
+
+    .filter-row-wrapper {
+        width: 100%;
+        height: 300px;
+    }
+
+    .inv-charts-wrapper {
+        width: 100%;
+        height: 600px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .filter-row-wrapper {
+        width: 100%;
+        height: 250px;
+    }
+
+    .inv-charts-wrapper {
+        width: 100%;
+        height: 500px;
+    }
+
+    .toolbar {
+        display: flex;
+        justify-content: center;
+    }
+
+}
