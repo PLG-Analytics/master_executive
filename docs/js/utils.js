@@ -20,7 +20,7 @@ function highlightCurrentPage() {
 
 // Load nav.html and then highlight
 function loadNav() {
-  fetch("nav.html")
+  fetch("https://plg-analytics.github.io/master_executive/pages/nav.html")
     .then(res => res.text())
     .then(html => {
       const container = document.getElementById("waffle-container");
