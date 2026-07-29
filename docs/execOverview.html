@@ -93,7 +93,7 @@
         .funnel-row {
             display: flex;
             gap: 15px;
-            height: 450px;
+            height: 375px;
             margin-bottom: 15px; 
             margin-top: 15px;
         }
@@ -233,6 +233,40 @@
             cursor: pointer;
         }
 
+        /*Styling the toggle button for funnel analytics*/
+        .pivot-toggle-btn {
+            display: block;
+            margin-top: 10px;
+            background-color: #0097ce;
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        /* Styling the hover, color, etc for when the pivots are expanded/collapsed for a seamless move*/
+        .hide-pivot-menu .MuiPopover-root,
+        .hide-pivot-menu .MuiMenu-root,
+        .hide-pivot-menu [role="menu"] {
+            opacity: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+        }
+
+        .hide-pivot-menu .eYuuZI {
+            background-color: inherit !important;
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /*Prevent a page jump effect when expanding/collapsing*/
+        body.hide-pivot-menu {
+            padding-right: 0 !important;
+            overflow: auto !important;
+        }
+
         /* Responsive adjustments for different screen sizes */
         /* Tablet */
         @media (max-width: 1024px) {
@@ -248,10 +282,6 @@
             .funnel-row {
                 flex-direction: column;
                 height: auto;
-            }
-
-            .pivot-wrapper {
-                height: 400px;
             }
 
             .jumbotron-wrapper {
@@ -281,11 +311,7 @@
             .funnel-row {
                 flex-direction: column;
                 gap: 10px;
-            }
-
-            .pivot-wrapper {
-                height: 400px;
-            }       
+            }     
 
             .modal-context {
                 width: 95%;
@@ -307,7 +333,7 @@
         <div class="data-context-list">
             <p><strong>Litify Go-Live:</strong> Washington and NJ WC were onboarded in June 2026.</p>
             <p><strong>HC</strong> Headcount is updated monthly.</p>
-            <p><strong>Washington WC:</strong> Includes deduplicated matters migrated from DearLegal.</p>
+            <p><strong>Washington & NJ WC:</strong> Cases are deduplicated between DearLegal</p>
         </div>
     </div>
 </div>
@@ -443,6 +469,14 @@
         const funnelSection = document.createElement("div");
         funnelSection.classList.add("funnel-section");
 
+        // Add toggle button for pivots
+        const pivotToggleBtn = document.createElement("button");
+        pivotToggleBtn.id = "btnPivotToggle";
+        pivotToggleBtn.className = "pivot-toggle-btn";
+        pivotToggleBtn.textContent = "Expand All";
+        pivotToggleBtn.addEventListener("click", togglePivot);
+        container.appendChild(pivotToggleBtn);
+
         const funnelRow1 = document.createElement("div");
         funnelRow1.classList.add("funnel-row");
         let pivotFunnelWC = createChart( appId, "367e6ff1-36bb-4991-8def-bb09be548ca6"); 
@@ -471,10 +505,16 @@
         document.getElementById("divFilterBar").appendChild(selectionWrapper);
     }
 
-(async () => {
-    renderDashboard();
-    waitForQlikAuth();
-})();
+    // render the dashboards, set the state for pivots accordingly
+    (async () => {
+        renderDashboard();
+
+        await waitForQlikAuth();
+        await waitForPivotMenus();
+
+        await initializePivotButton();
+
+    })();
 
 
 // Clear filters and re-render the chart with a new identity
@@ -497,6 +537,147 @@
     function closeDataContext() {
         document.getElementById("dataContextModal")
             .classList.add("hidden");
+    }
+
+    let pivotsExpanded = false;
+    // Expand the pivot tables entirely
+    async function expandMenu(menu) {
+
+        menu.click();
+
+        await new Promise(r => setTimeout(r, 50));
+
+        document.querySelectorAll('[role="menu"]').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        const expandItem =
+            [...document.querySelectorAll('li[role="menuitem"]')]
+                .find(li => li.textContent.trim() === 'Expand');
+
+        expandItem?.click();
+
+        await new Promise(r => setTimeout(r, 140));
+    }
+
+    // Collapse the pivot tables entirely
+    async function collapseMenu(menu) {
+
+        menu.click();
+
+        await new Promise(r => setTimeout(r, 50));
+
+        document.querySelectorAll('[role="menu"]').forEach(el => {
+            el.style.display = 'none';
+        });
+
+        const collapseItem =
+            [...document.querySelectorAll('li[role="menuitem"]')]
+                .find(li => li.textContent.trim() === 'Collapse');
+
+        collapseItem?.click();
+
+        await new Promise(r => setTimeout(r, 140));
+    }
+    
+    // wait till all pivots have been loaded
+    async function waitForPivotMenus() {
+
+        while (
+            document.querySelectorAll(
+                '.nebula-table-utils-head-menu-wrapper'
+            ).length < 9
+        ) {
+            await new Promise(r => setTimeout(r, 250));
+        }
+    }
+    
+    // initialize all pivots in the initial load based on the current state
+    async function initializePivotButton() {
+
+        // Wait for Qlik to finish rendering
+        await new Promise(r => setTimeout(r, 150));
+
+        const count = document.querySelectorAll(
+            '.nebula-table-utils-head-menu-wrapper'
+        ).length;
+
+        console.log("Final menu count:", count);
+
+        const btn = document.getElementById("btnPivotToggle");
+
+        if (count >= 18) {
+            pivotsExpanded = true;
+            btn.textContent = "Collapse All";
+            btn.style.backgroundColor = "#d9534f";
+
+        } else {
+            pivotsExpanded = false;
+            btn.textContent = "Expand All";
+            btn.style.backgroundColor = "#0097ce";
+        }
+    }
+    
+    // Handle the toggle and format of the button
+    async function togglePivot() {
+
+        document.body.classList.add("hide-pivot-menu");
+
+        try {
+
+            let menus = [...document.querySelectorAll(
+                '.nebula-table-utils-head-menu-wrapper'
+            )];
+
+            if (!pivotsExpanded) {
+
+                for (let i = 8; i < menus.length; i++) {
+                    await expandMenu(menus[i]);
+                }
+
+                menus = [...document.querySelectorAll(
+                    '.nebula-table-utils-head-menu-wrapper'
+                )];
+
+                for (let i = 8; i < menus.length; i++) {
+                    await expandMenu(menus[i]);
+                }
+
+                document.getElementById("btnPivotToggle").textContent =  "Collapse All";
+                document.getElementById("btnPivotToggle").style.backgroundColor = "#d9534f";
+                pivotsExpanded = true;
+
+            } else {
+
+                for (let i = 8; i < menus.length; i++) {
+                    await collapseMenu(menus[i]);
+                }
+
+                menus = [...document.querySelectorAll(
+                    '.nebula-table-utils-head-menu-wrapper'
+                )];
+
+                for (let i = 8; i < menus.length; i++) {
+                    await collapseMenu(menus[i]);
+                }
+
+                document.getElementById("btnPivotToggle").textContent = "Expand All";
+                document.getElementById("btnPivotToggle").style.backgroundColor = "#0097ce";
+                pivotsExpanded = false;
+            }
+
+        } finally {
+
+    document.querySelectorAll('.MuiPopover-root').forEach(el => {
+        el.remove();
+    });
+
+    document.querySelectorAll('.MuiMenu-root').forEach(el => {
+        el.remove();
+    });
+
+    document.body.classList.remove("hide-pivot-menu");
+}
     }
 
 </script>

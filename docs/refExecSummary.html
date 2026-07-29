@@ -39,54 +39,60 @@
 
       /* KPI unit - representing half of the full row */
       .kpi-unit {
-          min-width: 0;
+        min-width: 0;
       }
 
       /* Styling for when the unit is divided into quarters */
       .kpi-unit-quarters {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
       }
 
       /* Styling for when the unit is divided into halves */
       .kpi-unit-halves {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 8px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
       }
 
       /* Ensuring each component of a unit is styled the same way */
       .kpi-full-row,
       .kpi-half-row,
       .kpi-quarter-row {
-          min-height: 130px;
-          height: 130px;
+        min-height: 130px;
+        height: 130px;
 
-          border: 1px solid #d3d3d3;
-          box-shadow: 0 3px 7px rgba(0,0,0,.10);
-          background: #fff;
+        border: 1px solid #d3d3d3;
+        box-shadow: 0 3px 7px rgba(0,0,0,.10);
+        background: #fff;
 
-          min-width: 0;
+        min-width: 0;
       }
 
       /* Ensuring each qlik component of a unit is styled the same way */
       .kpi-full-row qlik-embed,
       .kpi-half-row qlik-embed,
       .kpi-quarter-row qlik-embed {
-          width: 100%;
-          height: 100%;
-          display: block;
+        width: 100%;
+        height: 100%;
+        display: block;
       }
 
       /* Styling the last row to be a bit longer than the rest */
       .kpi-row-last {
-          height: 275px;
+        height: 275px;
       }
 
-      /* Styling for the Saltz chart to take up the full height of its container */
-      .tb-saltz {
-          height: 100%;
+        /* Styling for the last chart to take up the full height of its container */
+      .tb-top-list {
+        height: 100%;
+      }
+
+      /* Updating font-size to be 16px for the entire table */
+      .tb-top-list,
+      .tb-top-list * {
+        font-size: 16px !important;
       }
 
       /* Responsive adjustments for different screen sizes */
@@ -318,7 +324,7 @@
       row5Unit2.classList.add("kpi-unit");
 
       let refTopCaseType = createChart( appId, "VghWYs");
-      row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-saltz",0));
+      row5Unit2.appendChild(wrapper(refTopCaseType, "kpi-full-row tb-top-list",0));
 
       kpiRow5.appendChild(row5Unit1);
       kpiRow5.appendChild(row5Unit2);
