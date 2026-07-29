@@ -131,7 +131,7 @@ qlik-embed {
     padding: 15px;
 
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    z-index: 999;
+    z-index: 1001;
 }
 
 /* Styling the overall layout of the waffle nav  */
@@ -218,6 +218,11 @@ qlik-embed {
 .fullscreen-btn img {
     width: 25px;
     height: 25px;
+}
+
+/* Updated z index for the menu dropdown in tables so that it appears when the chart is full screened */
+.nebula-table-utils-head-menu.MuiMenu-root {
+    z-index: 10000 !important;
 }
 
 @media (max-width: 768px) {
